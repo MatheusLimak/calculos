@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Validação Completa - Sistema de Configurações</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .section {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .section h3 {
+            margin-top: 0;
+            color: #2196f3;
+        }
+        .result {
+            background: #e8f5e8;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 5px 0;
+            font-family: monospace;
+            font-size: 12px;
+        }
+        .error {
+            background: #ffe8e8;
+            color: #d32f2f;
+        }
+        .success {
+            background: #e8f5e8;
+            color: #2e7d32;
+        }
+        .warning {
+            background: #fff3e0;
+            color: #f57c00;
+        }
+        .info {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+        button {
+            background: #2196f3;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #1976d2;
+        }
+        .btn-success {
+            background: #4caf50;
+        }
+        .btn-success:hover {
+            background: #45a049;
+        }
+        .btn-warning {
+            background: #ff9800;
+        }
+        .btn-warning:hover {
+            background: #f57c00;
+        }
+        .btn-danger {
+            background: #f44336;
+        }
+        .btn-danger:hover {
+            background: #d32f2f;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 10px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+            font-size: 12px;
+        }
+        th {
+            background-color: #f5f5f5;
+        }
+        .test-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 15px;
+            margin: 15px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 Validação Completa - Sistema de Configurações Dinâmicas</h1>
+        
+        <div class="section">
+            <h3>📋 Testes Disponíveis</h3>
+            <button onclick="testarConfigHelper()">🔧 Testar Config Helper</button>
+            <button onclick="testarCalculos()">🧮 Testar Cálculos</button>
+            <button onclick="testarAdminPanel()">⚙️ Testar Admin Panel</button>
+            <button onclick="testarIntegracao()">🔗 Testar Integração</button>
+            <button onclick="limparDados()" class="btn-danger">🗑️ Limpar Dados</button>
+            <button onclick="executarTodosTestes()" class="btn-success">🚀 Executar Todos os Testes</button>
+        </div>
+
+        <div id="results"></div>
+    </div>
+
+    <script src="config_helper.js"></script>
+    <script>
+        function addResult(message, type = 'info') {
+            const resultsDiv = document.getElementById('results');
+            const div = document.createElement('div');
+            div.className = 'result ' + type;
+            div.textContent = message;
+            resultsDiv.appendChild(div);
+        }
+
+        function clearResults() {
+            document.getElementById('results').innerHTML = '';
+        }
+
+        function testarConfigHelper() {
+            clearResults();
+            addResult('🔧 TESTANDO CONFIG HELPER...', 'info');
+            
+            try {
+                if (typeof loadTaxConfig !== 'function') {
+                    addResult('❌ Função loadTaxConfig não encontrada!', 'error');
+                    return;
+                }
+                addResult('✅ Função loadTaxConfig encontrada', 'success');
+
+                const config = loadTaxConfig();
+                
+                if (!config) {
+                    addResult('❌ Configurações não carregadas', 'error');
+                    return;
+                }
+                addResult('✅ Configurações carregadas com sucesso', 'success');
+
+                const requiredKeys = ['irrf', 'inss', 'plr', 'pj', 'other'];
+                for (const key of requiredKeys) {
+                    if (!config[key]) {
+                        addResult(`❌ Chave '${key}' não encontrada nas configurações`, 'error');
+                        return;
+                    }
+                }
+                addResult('✅ Estrutura das configurações está correta', 'success');
+
+                addResult('📊 Verificando valores padrão:', 'info');
+                addResult(`IRRF: ${config.irrf.length} faixas`, 'info');
+                addResult(`INSS: ${config.inss.length} faixas`, 'info');
+                addResult(`PLR: ${config.plr.length} faixas`, 'info');
+                addResult(`PJ: ${config.pj.length} faixas`, 'info');
+                addResult(`Teto INSS: R$ ${config.other.tetoINSS}`, 'info');
+                addResult(`Valor Máximo INSS: R$ ${config.other.valorMaximoINSS}`, 'info');
+
+            } catch (error) {
+                addResult(`❌ Erro no teste: ${error.message}`, 'error');
+            }
+        }
+
+        function testarCalculos() {
+            clearResults();
+            addResult('🧮 TESTANDO CÁLCULOS...', 'info');
+            
+            try {
+                const config = loadTaxConfig();
+                
+                addResult('📊 Teste 1: Cálculo INSS', 'info');
+                const salarioTeste = 5000;
+                const inssCalculado = calcularINSS(salarioTeste);
+                addResult(`Salário: R$ ${salarioTeste} | INSS: R$ ${inssCalculado}`, 'info');
+                
+                if (inssCalculado > 0 && inssCalculado <= config.other.valorMaximoINSS) {
+                    addResult('✅ Cálculo INSS funcionando corretamente', 'success');
+                } else {
+                    addResult('❌ Cálculo INSS com problema', 'error');
+                }
+
+                addResult('📊 Teste 2: Cálculo IRRF', 'info');
+                const irrfCalculado = calcularIRRF(salarioTeste, inssCalculado, 0);
+                addResult(`Base: R$ ${salarioTeste} | INSS: R$ ${inssCalculado} | IRRF: R$ ${irrfCalculado}`, 'info');
+                
+                if (irrfCalculado >= 0) {
+                    addResult('✅ Cálculo IRRF funcionando corretamente', 'success');
+                } else {
+                    addResult('❌ Cálculo IRRF com problema', 'error');
+                }
+
+                addResult('📊 Teste 3: Cálculo PJ', 'info');
+                const receitaAnual = 120000;
+                const faixas = config.pj.map((faixa, index) => ({
+                    faixa: `${index + 1}ª Faixa`,
+                    limite: faixa.limite,
+                    aliquota: faixa.aliquota,
+                    deducao: faixa.deducao
+                }));
+                const faixaAplicada = faixas.find(f => receitaAnual <= f.limite) || faixas[faixas.length - 1];
+                const impostoPJ = (receitaAnual * faixaAplicada.aliquota) - faixaAplicada.deducao;
+                
+                addResult(`Receita Anual: R$ ${receitaAnual}`, 'info');
+                addResult(`Faixa: ${faixaAplicada.faixa} | Alíquota: ${(faixaAplicada.aliquota * 100).toFixed(2)}%`, 'info');
+                addResult(`Imposto PJ: R$ ${impostoPJ.toFixed(2)}`, 'info');
+                
+                if (impostoPJ >= 0) {
+                    addResult('✅ Cálculo PJ funcionando corretamente', 'success');
+                } else {
+                    addResult('❌ Cálculo PJ com problema', 'error');
+                }
+
+            } catch (error) {
+                addResult(`❌ Erro no teste: ${error.message}`, 'error');
+            }
+        }
+
+        function testarAdminPanel() {
+            clearResults();
+            addResult('⚙️ TESTANDO ADMIN PANEL...', 'info');
+            
+            try {
+                addResult('💾 Testando salvamento de configurações...', 'info');
+                const config = loadTaxConfig();
+                
+                const configModificada = { ...config };
+                configModificada.other.tetoINSS = 9000;
+                
+                try {
+                    localStorage.setItem('otherConfig', JSON.stringify(configModificada.other));
+                    addResult('✅ Salvamento simulado funcionando', 'success');
+                    
+                    const savedConfig = JSON.parse(localStorage.getItem('otherConfig'));
+                    if (savedConfig.tetoINSS === 9000) {
+                        addResult('✅ Configuração salva e carregada corretamente', 'success');
+                    } else {
+                        addResult('❌ Problema ao verificar configuração salva', 'error');
+                    }
+                } catch (error) {
+                    addResult(`❌ Erro ao salvar: ${error.message}`, 'error');
+                }
+
+            } catch (error) {
+                addResult(`❌ Erro no teste: ${error.message}`, 'error');
+            }
+        }
+
+        function testarIntegracao() {
+            clearResults();
+            addResult('🔗 TESTANDO INTEGRAÇÃO...', 'info');
+            
+            try {
+                if (typeof loadTaxConfig === 'function') {
+                    addResult('✅ config_helper.js carregado corretamente', 'success');
+                } else {
+                    addResult('❌ config_helper.js não carregado', 'error');
+                    return;
+                }
+
+                try {
+                    localStorage.setItem('teste', 'teste');
+                    const teste = localStorage.getItem('teste');
+                    localStorage.removeItem('teste');
+                    
+                    if (teste === 'teste') {
+                        addResult('✅ localStorage funcionando corretamente', 'success');
+                    } else {
+                        addResult('❌ localStorage com problema', 'error');
+                    }
+                } catch (error) {
+                    addResult(`❌ Erro no localStorage: ${error.message}`, 'error');
+                }
+
+                addResult('🔍 Verificando consistência entre arquivos...', 'info');
+                const config = loadTaxConfig();
+                
+                const valoresEsperados = {
+                    tetoINSS: 8157.41,
+                    valorMaximoINSS: 951.62,
+                    valorPorDependente: 189.59,
+                    descontoSimplificado: 607.20
+                };
+                
+                for (const [key, valor] of Object.entries(valoresEsperados)) {
+                    if (config.other[key] === valor) {
+                        addResult(`✅ ${key}: R$ ${valor} (correto)`, 'success');
+                    } else {
+                        addResult(`❌ ${key}: R$ ${config.other[key]} (esperado: R$ ${valor})`, 'error');
+                    }
+                }
+
+                const tabelas = ['irrf', 'inss', 'plr', 'pj'];
+                for (const tabela of tabelas) {
+                    if (config[tabela] && config[tabela].length > 0) {
+                        addResult(`✅ Tabela ${tabela.toUpperCase()}: ${config[tabela].length} faixas`, 'success');
+                    } else {
+                        addResult(`❌ Tabela ${tabela.toUpperCase()}: sem faixas`, 'error');
+                    }
+                }
+
+            } catch (error) {
+                addResult(`❌ Erro no teste: ${error.message}`, 'error');
+            }
+        }
+
+        function limparDados() {
+            clearResults();
+            addResult('🗑️ LIMPANDO DADOS...', 'info');
+            
+            try {
+                const keysToRemove = [
+                    'irrfConfig', 'inssConfig', 'plrConfig', 'pjConfig', 'otherConfig',
+                    'adminSession', 'adminLoggedIn', 'adminLoginTime'
+                ];
+                
+                let removedCount = 0;
+                for (const key of keysToRemove) {
+                    if (localStorage.getItem(key)) {
+                        localStorage.removeItem(key);
+                        removedCount++;
+                    }
+                }
+                
+                addResult(`✅ ${removedCount} configurações removidas do localStorage`, 'success');
+                addResult('🔄 Recarregando configurações padrão...', 'info');
+                
+                const config = loadTaxConfig();
+                addResult('✅ Configurações padrão carregadas', 'success');
+                
+            } catch (error) {
+                addResult(`❌ Erro ao limpar dados: ${error.message}`, 'error');
+            }
+        }
+
+        function executarTodosTestes() {
+            clearResults();
+            addResult('🚀 EXECUTANDO TODOS OS TESTES...', 'info');
+            
+            setTimeout(() => testarConfigHelper(), 500);
+            setTimeout(() => testarCalculos(), 1500);
+            setTimeout(() => testarAdminPanel(), 2500);
+            setTimeout(() => testarIntegracao(), 3500);
+        }
+
+        function calcularIRRF(baseBruta, inss, dependentes = 0) {
+            const config = loadTaxConfig();
+            const valorPorDependente = config.other.valorPorDependente;
+            const descontoSimplificado = config.other.descontoSimplificado;
+            const baseLegal = baseBruta - inss - (dependentes * valorPorDependente);
+            const baseSimplificada = baseBruta - descontoSimplificado;
+
+            const calcularIR = (base) => {
+                for (const faixa of config.irrf) {
+                    if (base <= faixa.limite) {
+                        return base * faixa.aliquota - faixa.deducao;
+                    }
+                }
+                const ultimaFaixa = config.irrf[config.irrf.length - 1];
+                return base * ultimaFaixa.aliquota - ultimaFaixa.deducao;
+            };
+
+            const irrfLegal = calcularIR(baseLegal);
+            const irrfSimplificado = calcularIR(baseSimplificada);
+
+            return Math.min(irrfLegal, irrfSimplificado);
+        }
+
+        function calcularINSS(salario) {
+            const config = loadTaxConfig();
+            const faixas = config.inss;
+            const tetoINSS = config.other.tetoINSS;
+            const valorMaximoINSS = config.other.valorMaximoINSS;
+
+            let inss = 0;
+            let limiteAnterior = 0;
+
+            for (const faixa of faixas) {
+                if (salario > faixa.limite) {
+                    inss += (faixa.limite - limiteAnterior) * faixa.aliquota;
+                    limiteAnterior = faixa.limite;
+                } else {
+                    inss += (salario - limiteAnterior) * faixa.aliquota;
+                    return Math.round(inss * 100) / 100;
+                }
+            }
+            return valorMaximoINSS;
+        }
+
+        window.addEventListener('load', function() {
+            addResult('📋 Sistema de validação carregado. Use os botões para executar os testes.', 'info');
+        });
+    </script>
+</body>
+</html> 

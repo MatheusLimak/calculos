@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Administrativo - Calculadora PJ/CLT</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-image: url('Fundo Tela Gestão estratégica.png');
+            background-size: cover;
+            background-position: center center;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+            height: 100vh;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .login-container {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+            color: #002c5f;
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .login-header .logo {
+            height: 60px;
+            margin-bottom: 15px;
+        }
+
+        .login-header h1 {
+            color: #002c5f;
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+
+        .login-header p {
+            color: #002c5f;
+            font-size: 14px;
+            opacity: 0.8;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #002c5f;
+            font-weight: bold;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 5px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #002c5f;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 12px;
+            background: #002c5f;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .login-btn:hover {
+            background: #0053a0;
+            transform: translateY(-2px);
+        }
+
+        .error-message {
+            color: #e74c3c;
+            text-align: center;
+            margin-top: 10px;
+            font-size: 14px;
+            display: none;
+            background: rgba(231, 76, 60, 0.1);
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .back-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .back-link a {
+            color: #002c5f;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .back-link a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-header">
+            <img src="logo-engeform-neg_cop.PNG" alt="Logo Engeform" class="logo">
+            <p>Configurações</p>
+        </div>
+        
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="username">Usuário:</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Senha:</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            
+            <button type="submit" class="login-btn">Entrar</button>
+        </form>
+        
+        <div id="errorMessage" class="error-message">
+            Usuário ou senha incorretos!
+        </div>
+        
+        <div class="back-link">
+            <a href="index.html">← Voltar para a calculadora</a>
+        </div>
+    </div>
+
+    <script>
+        // Proteção contra inspeção de elementos
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+        });
+
+        document.addEventListener('keydown', function(e) {
+            // Desabilitar F12, Ctrl+Shift+I, Ctrl+U
+            if (e.key === 'F12' || 
+                (e.ctrlKey && e.shiftKey && e.key === 'I') ||
+                (e.ctrlKey && e.key === 'u')) {
+                e.preventDefault();
+                return false;
+            }
+        });
+
+        // Função para gerar hash SHA-256
+        async function sha256(message) {
+            const msgBuffer = new TextEncoder().encode(message);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+            return hashHex;
+        }
+
+        // Função para verificar credenciais de forma segura
+        async function verifyCredentials(username, password) {
+            try {
+                // Hash da senha "admin" em SHA-256
+                const expectedPasswordHash = "8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918";
+                
+                // Gerar hash da senha fornecida
+                const providedPasswordHash = await sha256(password);
+                
+                // Verificar se o usuário é "admin" e o hash da senha está correto
+                return username === 'admin' && providedPasswordHash === expectedPasswordHash;
+            } catch (error) {
+                console.error('Erro na verificação de credenciais:', error);
+                return false;
+            }
+        }
+
+        // Função para gerar token de sessão
+        function generateSessionToken() {
+            const timestamp = Date.now();
+            const random = Math.random().toString(36).substring(2);
+            return btoa(`${timestamp}-${random}`);
+        }
+
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+            const errorMessage = document.getElementById('errorMessage');
+            const loginBtn = document.querySelector('.login-btn');
+            
+            // Desabilitar botão durante verificação
+            loginBtn.disabled = true;
+            loginBtn.textContent = 'Verificando...';
+            
+            try {
+                // Verificar credenciais
+                const isValid = await verifyCredentials(username, password);
+                
+                if (isValid) {
+                    // Gerar token de sessão
+                    const sessionToken = generateSessionToken();
+                    
+                    // Salvar informações de sessão de forma mais segura
+                    const sessionData = {
+                        token: sessionToken,
+                        loginTime: Date.now(),
+                        expiresAt: Date.now() + (2 * 60 * 60 * 1000) // 2 horas
+                    };
+                    
+                    localStorage.setItem('adminSession', JSON.stringify(sessionData));
+                    
+                    // Limpar campos sensíveis
+                    document.getElementById('username').value = '';
+                    document.getElementById('password').value = '';
+                    
+                    // Redirecionar para a página de administração
+                    window.location.href = 'admin_panel.html';
+                } else {
+                    errorMessage.style.display = 'block';
+                    setTimeout(() => {
+                        errorMessage.style.display = 'none';
+                    }, 3000);
+                    
+                    // Limpar senha em caso de erro
+                    document.getElementById('password').value = '';
+                }
+            } catch (error) {
+                console.error('Erro no login:', error);
+                errorMessage.textContent = 'Erro interno. Tente novamente.';
+                errorMessage.style.display = 'block';
+                setTimeout(() => {
+                    errorMessage.style.display = 'none';
+                }, 3000);
+            } finally {
+                // Reabilitar botão
+                loginBtn.disabled = false;
+                loginBtn.textContent = 'Entrar';
+            }
+        });
+
+        // Limpar dados sensíveis ao sair da página
+        window.addEventListener('beforeunload', function() {
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
+        });
+    </script>
+</body>
+</html> 

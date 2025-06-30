@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerador de Hash de Senha</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-image: url('Fundo Tela Gestão estratégica.png');
+            background-size: cover;
+            background-position: center center;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+            height: 100vh;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 500px;
+            color: #002c5f;
+        }
+
+        h1 {
+            text-align: center;
+            color: #002c5f;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #002c5f;
+            font-weight: bold;
+        }
+
+        input[type="password"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 5px;
+            font-size: 16px;
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 5px;
+            font-size: 16px;
+            background: rgba(255, 255, 255, 0.9);
+            font-family: monospace;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #002c5f;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+        }
+
+        button:hover {
+            background: #0053a0;
+            transform: translateY(-2px);
+        }
+
+        .info-box {
+            background: rgba(227, 242, 253, 0.8);
+            border: 1px solid rgba(25, 118, 210, 0.3);
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .info-box h3 {
+            color: #1976d2;
+            margin-bottom: 10px;
+        }
+
+        .info-box p {
+            color: #002c5f;
+            line-height: 1.5;
+            font-size: 14px;
+        }
+
+        .back-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .back-link a {
+            color: #002c5f;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .back-link a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔐 Gerador de Hash de Senha</h1>
+        
+        <div class="info-box">
+            <h3>⚠️ Uso Seguro</h3>
+            <p>Este utilitário gera hashes SHA-256 para senhas. Use apenas para alterar a senha do admin no sistema. Não compartilhe senhas ou hashes gerados.</p>
+        </div>
+
+        <form id="hashForm">
+            <div class="form-group">
+                <label for="password">Digite a nova senha:</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            
+            <button type="submit">Gerar Hash SHA-256</button>
+        </form>
+
+        <div class="form-group">
+            <label for="hashResult">Hash SHA-256 gerado:</label>
+            <input type="text" id="hashResult" readonly placeholder="O hash aparecerá aqui após gerar">
+        </div>
+
+        <div class="info-box">
+            <h3>📝 Como usar:</h3>
+            <p>1. Digite a nova senha desejada<br>
+               2. Clique em "Gerar Hash SHA-256"<br>
+               3. Copie o hash gerado<br>
+               4. Abra o arquivo <code>admin_login.html</code><br>
+               5. Substitua o valor de <code>expectedPasswordHash</code> pelo novo hash</p>
+        </div>
+
+        <div class="back-link">
+            <a href="index.html">← Voltar para a calculadora</a>
+        </div>
+    </div>
+
+    <script>
+        // Função para gerar hash SHA-256
+        async function sha256(message) {
+            const msgBuffer = new TextEncoder().encode(message);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+            return hashHex;
+        }
+
+        document.getElementById('hashForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const password = document.getElementById('password').value;
+            const hashResult = document.getElementById('hashResult');
+            
+            if (password.length < 3) {
+                alert('A senha deve ter pelo menos 3 caracteres!');
+                return;
+            }
+            
+            try {
+                const hash = await sha256(password);
+                hashResult.value = hash;
+                
+                // Limpar a senha após gerar o hash
+                document.getElementById('password').value = '';
+                
+                // Selecionar o hash para facilitar a cópia
+                hashResult.select();
+                hashResult.setSelectionRange(0, 99999); // Para dispositivos móveis
+                
+                alert('Hash gerado com sucesso! Copie o hash e use-o no arquivo admin_login.html');
+            } catch (error) {
+                console.error('Erro ao gerar hash:', error);
+                alert('Erro ao gerar hash. Tente novamente.');
+            }
+        });
+
+        // Limpar dados sensíveis ao sair da página
+        window.addEventListener('beforeunload', function() {
+            document.getElementById('password').value = '';
+            document.getElementById('hashResult').value = '';
+        });
+    </script>
+</body>
+</html> 

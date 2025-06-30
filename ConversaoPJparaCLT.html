@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang='pt-BR'>
+<head>
+  <script src="config_helper.js"></script>
+  <script src="dinamic_values.js"></script>
+  <script src="tolls_detalhado.js"></script>
+  <script src="site_tracker.js"></script>
+  <link rel='stylesheet' href='tolls.css'>  
+  <meta charset='UTF-8'>
+  <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+  <title>Conversão PJ para CLT</title>
+</head>
+<body>
+  <!-- Tela de Carregamento -->
+  <div id='loading-overlay' class='loading-overlay'>
+    <div class='spinner'></div>
+    <div class='loading-text'>Carregando<span class='dot'>.</span><span class='dot'>.</span><span class='dot'>.</span></div>
+  </div>
+
+  <header class='navbar'>
+    <img src='logo-engeform-neg_cop.PNG' alt='Logo Engeform' class='logo' href='index.html'>
+    <nav class='menu'>
+      <a href='index.html'>Início</a>
+    </nav>
+  </header>
+  
+  <div id="cabeçalhomenu" class="options" style="display: flex; gap: 0; align-items: stretch; margin-top: 0; justify-content: center;">
+    <a class='cartaomenu' href='calculocustoempregados.html' style="margin:0; height: 10px; border-radius: 0 0 0 0; border: none; background: #fff; cursor: pointer;">
+      <div class='card-header' style="height: 8px; font-size: 0.85em;">Calculo de Custo de Empregado</div>
+    </a>
+    <a class='cartaomenu' href='CalculoINSSeIRRF.html' style="margin:0; height: 10px; border-radius: 0 0 0 0; border: none; background: #fff; cursor: pointer;">
+      <div class='card-header' style="height: 8px; font-size: 0.85em;">Calculo de INSS e IRRF</div>
+    </a>
+    <a class='cartaomenu' href='ConversaoCLTparaPJ.html' style="margin:0; height: 10px; border-radius: 0 0 0 0; border: none; background: #fff; cursor: pointer;">
+      <div class='card-header' style="height: 8px; font-size: 0.85em;">Conversão CLT para PJ</div>
+    </a>
+    <a class='cartaomenu' href='ConversaoPJparaCLT.html' style="margin:0; height: 10px; border-radius: 0 0 0 0; border: none; background: #fff; cursor: pointer;">
+      <div class='card-header' style="height: 8px; font-size: 0.85em;">Conversão PJ para CLT</div>
+    </a>    
+  </div>
+
+  <main class='container'>
+    <section class='intro'>
+      <h1 style="text-align: center;">Conversão PJ para CLT</h1>
+      <div style='display: flex; gap: 40px; flex-wrap: wrap; margin-top: 20px;'>
+        <div class='input-box' style='flex: 1; min-width: 200px;'>
+          <label for='salario_pj' class='textDescription'>Informe o Salário Mensal PJ (R$):</label><br><br>
+          <input class='card_radio' type='number' id='salario_pj' step='0.01' placeholder='Ex: 8000,00'>
+        </div>
+        
+        <div class='input-box' style='flex: 1; min-width: 200px;'>
+          <label for='salario_clt_sugerido' class='textDescription'>Salário Bruto CLT Sugerido (R$):</label><br><br>
+          <input 
+            class='card_radio disabled-input' 
+            type='number' 
+            id='salario_clt_sugerido' 
+            step='0.01' 
+            placeholder='...' 
+            disabled 
+            style='background-color:transparent;color:gray;'
+          >
+        </div>
+      </div>  
+      
+      <div class='input-box'>
+        <label for='diaria' class='textDescription'>Selecione a Diária de Viagem (R$):</label>
+        <div class='card_radio textDescription' id='diaria' style='display: flex; gap: 40px; flex-wrap: wrap; margin-top: 10px; width: 100%; min-height: 50px;'>
+          <label><input type='radio' name='diaria' value='0'> R$ 0,00</label>
+          <label><input type='radio' name='diaria' value='668.80'> R$ 668,80</label>
+          <label><input type='radio' name='diaria' value='900.00'> R$ 900,00</label>
+          <label><input type='radio' name='diaria' value='1776.50'> R$ 1.776,50</label>
+          <label><input type='radio' name='diaria' value='2821.50'> R$ 2.821,50</label>
+        </div>
+      </div>
+      
+      <div class='input-box'>
+        <label for='adicional' class='textDescription' style='display: block; margin-bottom: 15px;'>Adicional de Transferência:</label>
+        <select id='adicional'>
+          <option value='NÃO'>NÃO</option>
+          <option value='SIM'>SIM</option>
+        </select>
+      </div>
+      
+      <div style='display: flex; gap: 20px; flex-wrap: wrap; margin-top: 20px;'>
+        <div class='input-box' style='flex: 1; min-width: 200px;'>
+          <label for='tributaveis' class='textDescription'>Outros valores Tributáveis (R$):</label><br><br>
+          <input class='card_radio' type='number' id='tributaveis' step='0.01' placeholder='Ex: 1000.00'>
+        </div>
+
+        <div class='input-box' style='flex: 1; min-width: 200px;'>
+          <label for='naoTributaveis' class='textDescription'>Outros valores Não Tributáveis (R$):</label><br><br>
+          <input class='card_radio' type='number' id='naoTributaveis' step='0.01' placeholder='Ex: 500.00'>
+        </div>
+      </div>
+      
+      <button class='btn' onclick='executarComLoadingReverso()'>Encontrar Salário CLT Aproximado</button>
+      <br>
+      <br>
+      <div id="quantidadedecalculosloading" class="card">O sistema precisou executar exatamente '<span id='tentativas'>0</span>' cálculos para encontrar o Salário CLT</div>
+    </section>
+    
+    <div class="group" style="display: flex; gap: 0; align-items: stretch;">
+      <div class='cartao' style="margin:0; height: 55px;">
+        <div class='card-header' style="height: 12px; font-size: 0.85em;">Salário PJ (Mensal)</div>
+        <span class="spancard" id='SALARIOPJ' style="font-size: 1em; line-height: 30px;">0</span>
+      </div>
+      <div class='cartao' style="margin:0; height: 55px;">
+        <div class='card-header' style="height: 12px; font-size: 0.85em;">Salário CLT (Mensal)</div>
+        <span class="spancard" id='SALARIOCLT' style="font-size: 1em; line-height: 30px;">0</span>
+      </div>
+    </div>
+
+    <div class="group" style="display: flex; gap: 0; align-items: stretch;">
+      <div class='cartao' style="margin:0; height: 55px;">
+        <div class='card-header' style="height: 12px; font-size: 0.85em;">Custo PJ (Anual)</div>
+        <span class="spancard" id='CUSTOPJ' style="font-size: 1em; line-height: 30px;">0</span>
+      </div>
+      <div class='cartao' style="margin:0; height: 55px;">
+        <div class='card-header' style="height: 12px; font-size: 0.85em;">Custo CLT (Anual)</div>
+        <span class="spancard" id='CUSTOCLT' style="font-size: 1em; line-height: 30px;">0</span>
+      </div>             
+      <div class='cartao' style="margin:0; height: 55px;">
+        <div class='card-header' style="height: 12px; font-size: 0.85em;">Liquido PJ (Anual)</div>
+        <span class="spancard" id='LIQUIDOTOTALPJ' style="font-size: 1em; line-height: 30px;">0</span>
+      </div>
+      <div class='cartao' style="margin:0; height: 55px;">
+        <div class='card-header' style="height: 12px; font-size: 0.85em;">Liquido CLT (Anual)</div>
+        <span class="spancard" id='LIQUIDOTOTALCLT' style="font-size: 1em; line-height: 30px;">0</span>
+      </div>
+      <div class='cartaoresultado' style="margin-left:10px; height: 55px;">
+        <div class='card-header' style="height: 15px; font-size: 0.85em;">Resultado (Anual)</div>
+        <span class="spancardresultado" id='VANTAGEMECONOMICACUSTO' style="font-size: 1em; line-height: 30px;">0</span>
+      </div> 
+    </div>
+    
+    <br>
+    <div class='cards'>
+      <div class='card' id='pjCard'>
+        <h2 style='text-align: center'>PJ</h2>
+        <div id='resultadoPJ'></div>
+      </div>
+
+      <div class='card' id='cltCard'>
+        <h2 style='text-align: center'>CLT</h2>
+        <div id='resultadoCLT'></div>
+      </div>
+    </div>
+
+    <div style="text-align: right; margin-top: 20px;">
+      <button class="btn" onclick="window.print()">Salvar</button>
+    </div>
+
+    <style>
+      @media print {
+        html, body {
+          width: 100%;
+          height: 100%;
+          margin: 0 !important;
+          padding: 0 !important;
+          background: white !important;
+          box-sizing: border-box;
+        }
+        body {
+          zoom: 50%;
+          margin: 20mm 10mm 20mm 10mm !important;
+          -webkit-print-color-adjust: exact !important;
+          print-color-adjust: exact !important;
+          background: white !important;
+        }
+        .navbar, .btn {
+          display: none !important;
+        }
+        #cabeçalhomenu {
+          display: none !important;
+        }
+        * {
+          -webkit-print-color-adjust: exact !important;
+          print-color-adjust: exact !important;
+        }
+        main.container {
+          background: white !important;
+          box-shadow: none !important;
+          width: 100% !important;
+          min-height: 100vh !important;
+          margin: 0 !important;
+          padding: 0 !important;
+        }
+        @page {
+          size: A4 portrait;
+          margin: 20mm 10mm 20mm 10mm;
+          background: white;
+        }
+      }
+    </style>
+  </main>
+  <br>
+  <br>
+</body>
+</html> 

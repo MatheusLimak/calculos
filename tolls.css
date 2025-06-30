@@ -1,0 +1,771 @@
+/* style.css */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+  
+  body {
+    background-image: url('Fundo Tela Gestão estratégica.png');
+    background-size: cover; /* A imagem vai cobrir toda a tela */
+    background-position: center center; /* Centraliza a imagem */
+    background-attachment: fixed; /* A imagem de fundo permanece fixa enquanto rola a página */
+    background-repeat: no-repeat; /* Impede que a imagem se repita */
+    height: 100vh; /* Faz a altura da página cobrir toda a altura da tela */
+    margin: 0; /* Remove qualquer margem ao redor da página */
+}
+
+  
+  .navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 2rem;
+    background-color: #002e5b;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .logo-container .logo {
+    height: 50px;
+  }
+  
+  .menu a {
+    color: #fff;
+    text-decoration: none;
+    margin-left: 2rem;
+    font-weight: bold;
+    transition: color 0.3s;
+  }
+  
+  .menu a:hover {
+    color: #00aaff;
+  }
+  
+  .home-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem 2rem;
+    text-align: center;
+  }
+  
+  .intro h1 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    color: #002e5b;
+  }
+  
+  .intro p {
+    font-size: 1rem;
+    margin-bottom: 2rem;
+  }
+  
+  .options {
+    display: flex;
+    gap: 2rem;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  
+  .btn {
+    padding: 1rem 2rem;
+    background-color: #007bff;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: background-color 0.3s;
+  }
+  
+  .btn:hover {
+    background-color: #0056b3;
+  }
+  
+
+  /* resumido ------------------------------------------------------------------------------------------*/
+
+
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+  }
+
+  .navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #002c5f;
+    padding: 1rem 2rem;
+  }
+
+  .logo {
+    height: 40px;
+  }
+
+  .menu a {
+    color: white;
+    margin-left: 1rem;
+    text-decoration: none;
+    font-weight: bold;
+  }
+
+  .container {
+    max-width: 1200px;
+    margin: 3rem auto;
+    padding: 2rem;
+    background: rgba(255, 255, 255, 0.2); /* Cor semitransparente para efeito vidro */
+    backdrop-filter: blur(10px); /* Adiciona o efeito de desfoque */
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    opacity: 1;
+}
+
+  .intro h1 {
+    color: #002c5f;
+    margin-bottom: 1rem;
+  }
+
+  .input-box {
+    margin-bottom: 1.5rem;
+  }
+
+  input[type='number'] {
+    width: 100%;
+    padding: 0.8rem;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+  }
+
+  select {
+    width: 100%;
+    padding: 0.8rem;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    margin-top: 1rem;
+  }
+
+  .btn {
+    background-color: #002c5f;
+    color: white;
+    border: none;
+    padding: 0.8rem 1.5rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    margin-top: 1rem;
+  }
+
+  .btn:hover {
+    background-color: #0053a0;
+  }
+
+  .cards {
+    display: flex;
+    gap: 2rem;
+    flex-wrap: wrap;
+  }
+
+  .card {
+    flex: 1;
+    min-width: 280px;
+    padding: 1.5rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+
+    backdrop-filter: blur(100px); /* Efeito de desfoque */
+    border: 2px solid rgba(255, 255, 255, 0.2); /* Borda sutil */
+    color: #002c5f; /* Texto claro para contrastar com o fundo */
+    font-family: Arial, sans-serif;
+    transition: all 0.3s ease; /* Transição suave ao passar o mouse */
+    overflow: hidden; /* Para garantir que o conteúdo do card não ultrapasse os limites */
+    margin: 0 0.1rem; /* Diminui o espaço horizontal entre os cards */
+  }
+
+
+.card:hover {
+    box-shadow: 0 6px 40px rgba(0, 0, 0, 0.3); /* Aumenta a sombra ao passar o mouse */
+    transform: translateY(-5px); /* Leve elevação ao passar o mouse */
+}
+
+.card div {
+    z-index: 10; /* Garantir que o conteúdo do card fique acima do fundo */
+}
+
+
+
+  .card h2 {
+    color: #002c5f;
+    margin-bottom: 1rem;
+  }
+
+  .card p {
+    margin: 0.3rem 0;
+  }
+
+
+  .titleresm {
+
+    color: white; font-weight: bold; background: #002e5b;text-align: center; padding: 0.5rem; border-radius: 10px; margin-bottom: 1rem;   
+  }
+
+  .loading-overlay {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  backdrop-filter: blur(8px);
+  background: rgba(0, 0, 0, 0.4);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  z-index: 9999;
+  animation: fadeIn 0.5s ease-in-out forwards;
+  font-family: 'Segoe UI', sans-serif;
+  opacity: 0;
+}
+
+.spinner {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  border: 6px solid transparent;
+  border-top: 6px solid #4df;
+  border-right: 6px solid #0ff;
+  animation: rotate 1s linear infinite;
+  margin-bottom: 20px;
+}
+
+
+@keyframes fadeIn {
+  to { opacity: 1; }
+}
+
+
+@keyframes rotate {
+  to { transform: rotate(360deg); }
+}
+
+.dot {
+  animation: blink 1.5s infinite;
+}
+
+.loading-text {
+  color: #fff;
+  font-size: 1.4rem;
+  display: flex;
+  align-items: center;
+}
+
+.loading-text .dot {
+  animation: blink 1.2s infinite;
+  font-weight: bold;
+}
+
+.loading-text .dot:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.loading-text .dot:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes blink {
+  0%, 80%, 100% { opacity: 0; }
+  40% { opacity: 1; }
+}
+
+.textDescription {
+  color: #002e5b;
+  font-size: 1.1rem;
+  margin-top: 1rem;
+  
+  
+}
+
+.card_radio {flex: 1;
+  min-width: 20px;
+  padding: 0.8rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(11px); /* Efeito de desfoque */
+  border: 2px solid rgba(255, 255, 255, 0.2); /* Borda sutil */
+  color: #002c5f; /* Texto claro para contrastar com o fundo */
+  font-family: Arial, sans-serif;
+  transition: all 0.3s ease; /* Transição suave ao passar o mouse */
+  overflow: hidden; /* Para garantir que o conteúdo do card não ultrapasse os limites */
+  background-color: white;
+  width: clamp(10px, 50vw, 550px);
+}
+
+.group {
+  display: flex;
+  flex-wrap: wrap; /* Permite quebrar linha se faltar espaço */
+  justify-content: space-between; /* Ou use center, space-around, etc */
+  gap: 12px; /* Espaço entre os cards */
+  padding: 10px;
+
+}
+
+.card-header {
+
+  font-weight: bold;
+  font-size: 18px;
+  margin-bottom: 5px;
+  text-align: center; /* <-- isso centraliza */
+  
+}
+
+
+.spancard {
+   display: block;
+    height: 100px;
+    line-height: 100px; /* Mesmo valor da altura */
+    text-align: center;
+    font-size: 18px;
+    color: #222;
+}
+
+.cartao {
+  flex: 1 1 15%;
+  min-width: 140px;
+  max-width: 650px;
+  backdrop-filter: blur(520px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 50px;
+  color: #002c5f;
+  border-width: 1px;
+  margin: 0.1px; /* diminui o espaço externo entre os cartões */
+  padding: 0.1px; /* diminui o espaço interno */
+  gap: 2px; /* diminui o espaço entre elementos internos, se houver */
+  border-style: solid;
+  border-color: white;
+  background-color: whitesmoke;
+  box-shadow: 0 1px 40px 0 rgba(0, 0, 0, 0.3); /* Sombra externa apenas */
+  
+  
+}
+
+
+.cartaoresultado {
+  flex: 1 1 15%;
+  min-width: 140px;
+  max-width: 220px;
+  backdrop-filter: none;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: #002c5f;
+  font-weight: bold;
+  font-size: 1.15rem;
+  box-shadow: 0 8px 32px 0 rgba(0, 44, 95, 0.25), 0 1.5px 40px rgba(0, 0, 0, 0.18);
+  outline: 3px solid #dbdbdb;
+  transition: transform 0.25s, box-shadow 0.25s, outline-color 0.25s;
+  position: relative;
+  border-radius: 5px;
+  background-color: whitesmoke;
+}
+
+.cartaoresultado span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100px;
+  width: 100%;
+  font-size: 2rem;
+  color: black;
+  text-align: center;
+}
+.cartaoresultado::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  box-shadow: 0 0 24px 6px #22373d55;
+  opacity: 0.7;
+  z-index: -1;
+}
+.cartaoresultado:hover {
+  transform: scale(1.04) translateY(-4px);
+  box-shadow: 0 12px 48px 0 rgba(0, 44, 95, 0.35), 0 4px 60px rgba(0, 198, 255, 0.18);
+  outline-color: #fff;
+}
+
+.spancardresultado {
+   display: block;
+    height: 100px;
+    line-height: 100px; /* Mesmo valor da altura */
+    text-align: center;
+    font-size: 18px;
+    color: #002c5f;
+    font-weight: bold;
+    
+}
+
+.cartaosalario {
+  flex: 1 1 15%;
+  min-width: 140px;
+  max-width: 650px;
+  backdrop-filter: blur(100px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 50px;
+  color: #002c5f;
+  box-shadow: 0 6px 40px rgba(0, 0, 0, 0.3);
+  border-width: 1px;
+  margin: 1px; /* diminui o espaço externo entre os cartões */
+  padding: 2px; /* diminui o espaço interno */
+  gap: 2px; /* diminui o espaço entre elementos internos, se houver */
+  max-height: 50px; /* Limita a altura máxima */
+  background-color: whitesmoke;
+}
+
+
+
+.card-headersalario {
+
+  font-weight: bold;
+  font-size: 18px;
+  text-align: center; /* <-- isso centraliza */
+  min-height: 1px;
+  max-height: 10px;
+}
+
+
+.containerresumo {
+    max-width: 1200px;
+    margin: 3rem auto;
+    padding: 2rem;    
+    border-radius: 10px;
+    box-shadow: 0 6px 40px rgba(0, 0, 0, 0.3);
+    opacity: 1;
+    backdrop-filter: blur(520px);
+    
+}
+
+.tooltip-container {
+      position: relative;
+      display: inline-block;
+      cursor: pointer;
+    }
+
+    .tooltip-text {
+      visibility: hidden;
+      width: 280px;
+      background-color: #fff;
+      color: #333;
+      text-align: left;
+      border-radius: 6px;
+      padding: 10px;
+      border: 1px solid #ccc;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      position: absolute;
+      z-index: 1;
+      top: -5px;
+      left: 105%;
+      font-size: 13px;
+    }
+
+    .tooltip-container:hover .tooltip-text {
+      visibility: visible;
+    }
+
+
+   
+    .container2 {
+      max-width: 800px;
+      margin: 50px auto;
+      background: white;
+      padding: 20px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      border-radius: 8px;
+    }
+    .blog-post {
+      display: none;
+      animation: fadeIn 0.5s ease-in-out;
+    }
+    .blog-post.active {
+      display: block;
+    }
+    h2, h3 {
+      color: #333;
+    }
+    table {
+      width: 100%;
+      margin-top: 10px;
+      border-collapse: collapse;
+    }
+    th, td {
+      padding: 10px;
+      border: 1px solid #ccc;
+      text-align: left;
+    }
+    @keyframes fadeIn {
+      from {opacity: 0;}
+      to {opacity: 1;}
+    }
+
+     .blog-post {
+    display: none;
+    transition: opacity 0.5s ease;
+  }
+
+  .blog-post.active {
+    display: block;
+  }
+
+
+ .cartaomenu {
+  flex: 1 1 15%;
+  min-width: 140px;
+  max-width: 650px;
+  backdrop-filter: blur(520px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+  align-items: center;
+  min-height: 30px;
+  color: #002c5f;
+  border-width: 1px;
+  margin: 0.1px;
+  padding: 0.1px;
+  gap: 2px;
+  border-style: solid;
+  border-color: white;
+  background-color: whitesmoke;
+  box-shadow: 0 1px 40px 0 rgba(0, 0, 0, 0.3);
+  transition: transform 0.2s ease, background-color 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+}
+
+.cartaomenu:hover {
+  background-color: #e0e0e0; /* cor de fundo ao passar o mouse */
+  transform: scale(1.02); /* leve aumento */
+  box-shadow: 0 2px 50px 5px rgba(0, 0, 0, 0.35); /* sombra mais intensa */
+}
+
+
+.containerblog {
+    max-width: 1200px;
+    margin: 3rem auto;
+    padding: 2rem;
+    background: rgba(255, 255, 255, 0.2); /* Cor semitransparente para efeito vidro */
+    backdrop-filter: blur(10px); /* Adiciona o efeito de desfoque */
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    opacity: 1;
+}
+
+#progress-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  height: 4px;
+  background-color: #ff4081;
+  width: 0;
+  animation: fillBar 12s linear infinite;
+}
+
+@keyframes fillBar {
+  0% { width: 0 }
+  100% { width: 100% }
+}
+
+
+html {
+  height:100%;
+}
+
+body {
+  margin:0;
+}
+
+.bg {
+  animation:slide 10s ease-in-out infinite alternate;
+  background-image: linear-gradient(-60deg, rgb(71, 76, 68) 50%, rgb(151, 154, 156) 50%);
+  bottom:0;
+  left:-50%;
+  opacity:.5;
+  position:fixed;
+  right:-50%;
+  top:0;
+  z-index:-1;
+}
+
+.bg2 {
+  animation-direction:alternate-reverse;
+  animation-duration:25s;
+}
+
+.bg3 {
+  animation-duration:25s;
+}
+
+.content {
+  
+  
+  box-shadow:0 0 .25em rgba(0,0,0,.25);
+  
+  left:50%;
+  
+  position:fixed;
+  text-align:center;
+  top:50%;
+  transform:translate(-50%, -50%);
+}
+
+h1 {
+  font-family:monospace;
+}
+
+@keyframes slide {
+  0% {
+    transform:translateX(-25%);
+  }
+  100% {
+    transform:translateX(25%);
+  }
+}
+
+.logocenter {
+  max-width: 300px;
+  min-height: 80%;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+}
+
+
+.containerorgn {
+   
+    margin: 3rem auto;
+    padding: 2rem;
+    background: rgba(255, 255, 255, 0.2); /* Cor semitransparente para efeito vidro */
+    backdrop-filter: blur(10px); /* Adiciona o efeito de desfoque */
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    opacity: 1;
+}
+
+/* Card de instruções para cálculo em lote */
+.card-instrucoes {
+  background: rgba(255,255,255,0.2); /* igual ao .container */
+  backdrop-filter: blur(10px); /* igual ao .container */
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  padding: 2rem 2rem 1.5rem 2rem;
+  margin-bottom: 2rem;
+  border: 1.5px solid #e0e7ef;
+  max-width: 900px;
+  margin-left: auto;
+  margin-right: auto;
+  opacity: 1;
+  display: block;
+}
+.card-instrucoes-title {
+  font-size: 1.35rem;
+  color: #002c5f;
+  font-weight: bold;
+  margin-bottom: 1.2rem;
+  border-bottom: 1.5px solid #b3d1f7;
+  padding-bottom: 0.5rem;
+}
+.card-instrucoes-section {
+  margin-bottom: 1.2rem;
+}
+.card-instrucoes-section h3 {
+  font-size: 1.05rem;
+  color: #0053a0;
+  margin-bottom: 0.4rem;
+  font-weight: 600;
+}
+.card-instrucoes-section ul {
+  margin: 0;
+  padding-left: 1.2rem;
+  line-height: 1.7;
+  color: #222;
+}
+.card-instrucoes-section.exemplos ul {
+  background: transparent;
+  border-radius: 7px;
+  padding: 0.7rem 1rem;
+  border: 1px solid #e0e7ef;
+}
+.card-instrucoes-section.dicas ul {
+  background: transparent;
+  border-radius: 7px;
+  padding: 0.7rem 1rem;
+  border: 1px solid #d2ecd2;
+  color: #1a3d1a;
+}
+.card-instrucoes-section.dicas h3::before {
+  content: '💡 ';
+}
+.card-instrucoes-section.exemplos h3::before {
+  content: '📋 ';
+}
+.card-instrucoes-section h3::before {
+  content: '';
+}
+
+.tipo-empregado-btn {
+  background: #002c5f !important;
+  color: white !important;
+  font-weight: bold;
+  font-size: 1.1em;
+  padding: 1.1em 0;
+  border-radius: 0;
+  border: none;
+  flex: 1 1 0;
+  min-width: 160px;
+  max-width: 100%;
+  margin: 0;
+  box-shadow: 0 2px 8px rgba(0,44,95,0.08);
+  transition: background 0.2s, box-shadow 0.2s, transform 0.1s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.tipo-empregado-btn:first-child {
+  border-top-left-radius: 8px;
+  border-bottom-left-radius: 8px;
+}
+.tipo-empregado-btn:last-child {
+  border-top-right-radius: 8px;
+  border-bottom-right-radius: 8px;
+}
+.tipo-empregado-btn:not(:first-child) {
+  border-left: 1px solid #174a7c;
+  margin-left: -1px;
+}
+@media (max-width: 700px) {
+  .tipo-empregado-btn {
+    font-size: 1em;
+    min-width: 120px;
+    padding: 0.8em 0;
+  }
+}
+.input-box .tipo-empregado-btn {
+  width: 100%;
+}
+.input-box .tipo-empregado-btn {
+  flex: 1 1 0;
+}
+.input-box > div {
+  display: flex;
+  gap: 0;
+  width: 100%;
+}

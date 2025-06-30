@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang='pt-BR'>
+<head>
+  <script src="config_helper.js"></script>
+  <script src="dinamic_values.js"></script>
+  <script src="custo_empregado.js"></script>
+  <script src="site_tracker.js"></script>
+  <link rel='stylesheet' href='tolls.css'>  
+  <meta charset='UTF-8'>
+  <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+  <title>Cálculo de Custo de Empregado</title>
+</head>
+<body>
+  <!-- Tela de Carregamento -->
+
+  
+  <div id='loading-overlay' class='loading-overlay' >
+    <div class='spinner'></div>
+    <div class='loading-text'>Carregando<span class='dot'>.</span><span class='dot'>.</span><span class='dot'>.</span></div>
+  </div>
+
+
+  <header class='navbar'>
+    <img src='logo-engeform-neg_cop.PNG' alt='Logo Engeform' class='logo' href='index.html'>
+    <nav class='menu'>
+      <a href='index.html'>Início</a>
+      
+    </nav>
+  </header>
+<div id="cabeçalhomenu" class="options" style="display: flex; gap: 0; align-items: stretch; margin-top: 0; justify-content: center;">
+    <a class='cartaomenu' href='calculocustoempregados.html' style="margin:0; height: 10px; border-radius: 0 0 0 0; border: none; background: #fff; cursor: pointer;">
+      <div class='card-header' style="height: 8px; font-size: 0.85em;">Cálculo de Custo de Empregado</div>
+    </a>
+    <a class='cartaomenu' href='CalculoINSSeIRRF.html' style="margin:0; height: 10px; border-radius: 0 0 0 0; border: none; background: #fff; cursor: pointer;">
+      <div class='card-header' style="height: 8px; font-size: 0.85em;">Calculo de INSS e IRRF</div>
+    </a>
+    <a class='cartaomenu' href='ConversaoCLTparaPJ.html' style="margin:0; height: 10px; border-radius: 0 0 0 0; border: none; background: #fff; cursor: pointer;">
+      <div class='card-header' style="height: 8px; font-size: 0.85em;">Conversão CLT para PJ</div>
+    </a>
+    <a class='cartaomenu' href='ConversaoPJparaCLT.html' style="margin:0; height: 10px; border-radius: 0 0 0 0; border: none; background: #fff; cursor: pointer;">
+      <div class='card-header' style="height: 8px; font-size: 0.85em;">Conversão PJ para CLT</div>
+    </a>    
+  </div>
+
+  <main class='container'>
+    <div style="display: flex; justify-content: flex-end; max-width: 1200px; margin: 0 auto 10px auto;">
+      <button class="btn" style="font-size: 0.98em; padding: 0.6em 1.2em; display: flex; align-items: center; gap: 6px;" onclick="window.location.href='calculoloteempregados.html'">
+        <span style="display: flex; align-items: center; height: 1em;">
+          <svg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='#fff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M18 13v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6'/><polyline points='15 3 21 3 21 9'/><line x1='10' y1='14' x2='21' y2='3'/></svg>
+        </span>
+        Estudo em Lote
+      </button>
+    </div>
+    <section class='intro'>
+      <h1 style="text-align: center;">Cálculo de Custo de Empregado</h1>
+      
+      <!-- Seletor de Tipo de Empregado - Botões -->
+      <div class='input-box' style='margin-bottom: 30px; text-align: center;'>
+        <label class='textDescription' style='display: block; margin-bottom: 15px; font-weight: bold;'>Tipo de Empregado:</label>
+        <div style='display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;'>
+          <button type='button' class='btn tipo-empregado-btn' data-tipo='clt_normal' style='min-width: 120px;'>
+            CLT Normal
+          </button>
+          <button type='button' class='btn tipo-empregado-btn' data-tipo='aprendiz' style='min-width: 120px;'>
+            CLT Aprendiz
+          </button>
+          <button type='button' class='btn tipo-empregado-btn' data-tipo='estagiario' style='min-width: 120px;'>
+            Estagiário
+          </button>
+          <button type='button' class='btn tipo-empregado-btn' data-tipo='pj' style='min-width: 120px;'>
+            PJ
+          </button>
+        </div>
+        <input type='hidden' id='tipoEmpregado' value='clt_normal'>
+      </div>
+      
+      <div style='display: flex; gap: 40px; flex-wrap: wrap; margin-top: 20px;'>
+        <div class='input-box' style='flex: 1; min-width: 200px;'>
+          <label for='salario' class='textDescription'>Informe o Salário Bruto CLT (R$):</label><br><br>
+          <input class='card_radio' type='number' id='salario' step='0.01' placeholder='Ex: 7000,00'>
+        </div>
+        
+        <div class='input-box' style='flex: 1; min-width: 200px;'>
+          <label for='dependentes' class='textDescription'>Número de Dependentes:</label><br><br>
+          <input class='card_radio' type='number' id='dependentes' min='0' max='10' value='0' placeholder='0'>
+        </div>
+      </div>  
+      
+      <div class='input-box'>
+        <label for='diaria' class='textDescription'>Selecione a Diária de Viagem (R$):</label>
+        <div class='card_radio textDescription' id='diaria' style='display: flex; gap: 40px; flex-wrap: wrap; margin-top: 10px; width: 100%; min-height: 50px;'>
+          <label><input type='radio' name='diaria' value='0' checked> R$ 0,00</label>
+          <label><input type='radio' name='diaria' value='668.80'> R$ 668,80</label>
+          <label><input type='radio' name='diaria' value='900.00'> R$ 900,00</label>
+          <label><input type='radio' name='diaria' value='1776.50'> R$ 1.776,50</label>
+          <label><input type='radio' name='diaria' value='2821.50'> R$ 2.821,50</label>
+        </div>
+             
+      </div>
+      <div class='input-box'>
+        <label for='adicional' class='textDescription' style='display: block; margin-bottom: 15px;'>Adicional de Transferência:</label>
+        <select id='adicional'>
+          <option value='NÃO'>NÃO</option>
+          <option value='SIM'>SIM</option>
+        </select>
+      </div>
+        
+      <div style='display: flex; gap: 20px; flex-wrap: wrap; margin-top: 20px;'>
+        <div class='input-box' style='flex: 1; min-width: 200px;'>
+          <label for='tributaveis' class='textDescription'>Outros valores Tributáveis (R$):</label><br><br>
+          <input class='card_radio' type='number' id='tributaveis' step='0.01' placeholder='Ex: 1000.00'>
+        </div>
+
+        <div class='input-box' style='flex: 1; min-width: 200px;'>
+            <label for='naoTributaveis' class='textDescription'>Outros valores Não Tributáveis (R$):</label><br><br>
+            <input class='card_radio' type='number' id='naoTributaveis' step='0.01' placeholder='Ex: 500.00'>
+        </div>
+      </div>
+      <button class='btn' onclick='calcularCustoEmpregado()'>Calcular Custo</button>
+      <br>
+      <br>
+      <div id ="quantidadedecalculosloading" class="card" style="display: none;">Cálculo realizado com sucesso!</div>
+</div>
+<div class="group" style="display: none; gap: 0; align-items: stretch;" >
+
+  <div class='cartao' style="margin:0; height: 55px;">
+    <div class='card-header' style="height: 12px; font-size: 0.85em;">Salário CLT (Mensal)</div>
+    <span class="spancard" id='SALARIOCLT' style="font-size: 1em; line-height: 30px;">0</span>
+  </div>
+  
+  <div class='cartao' style="margin:0; height: 55px;">
+    <div class='card-header' style="height: 12px; font-size: 0.85em;">Custo Empresa (Anual)</div>
+    <span class="spancard" id='CUSTOCLT' style="font-size: 1em; line-height: 30px;">0</span>
+  </div>             
+
+  <div class='cartao' style="margin:0; height: 55px;">
+    <div class='card-header' style="height: 12px; font-size: 0.85em;">Liquido Empregado (Anual)</div>
+    <span class="spancard" id='LIQUIDOTOTALCLT' style="font-size: 1em; line-height: 30px;">0</span>
+  </div>
+  
+</div>
+
+</section>
+<br>
+<div class='cards'>
+  <div class='card' id='pjCard'>
+    <h2 style='text-align: center'>Detalhamento do Custo</h2>
+    <div id='resultadoCLT'></div>
+  </div>
+  
+</div>
+
+
+
+            
+            <div style="text-align: right; margin-top: 20px;">
+  <button class="btn" onclick="window.print()">Salvar</button>
+</div>
+
+<style>
+  @media print {
+    html, body {
+      width: 100%;
+      height: 100%;
+      margin: 0 !important;
+      padding: 0 !important;
+      background: white !important;
+      box-sizing: border-box;
+    }
+    body {
+      zoom: 50%;
+      margin: 20mm 10mm 20mm 10mm !important;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+      background: white !important;
+    }
+    .navbar, .btn {
+      display: none !important;
+    }
+    #cabeçalhomenu {
+      display: none !important;
+    }
+    * {
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }
+    main.container {
+      background: white !important;
+      box-shadow: none !important;
+      width: 100% !important;
+      min-height: 100vh !important;
+      margin: 0 !important;
+      padding: 0 !important;
+    }
+    @page {
+      size: A4 portrait;
+      margin: 20mm 10mm 20mm 10mm;
+      background: white;
+    }
+  }
+
+  /* Estilos para os botões de tipo de empregado */
+  .tipo-empregado-btn {
+    background: #002c5f !important;
+    color: white !important;
+    border: 2px solid #002c5f !important;
+    transition: all 0.3s ease !important;
+    font-weight: bold !important;
+  }
+
+  .tipo-empregado-btn:hover {
+    background: #0053a0 !important;
+    border-color: #0053a0 !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 4px 12px rgba(0, 44, 95, 0.3) !important;
+  }
+
+  .tipo-empregado-btn.ativo {
+    background: #0053a0 !important;
+    border-color: #0053a0 !important;
+    box-shadow: 0 4px 12px rgba(0, 44, 95, 0.3) !important;
+    transform: translateY(-2px) !important;
+  }
+
+  .tipo-empregado-btn:not(.ativo) {
+    background: #002c5f !important;
+    border-color: #002c5f !important;
+  }
+</style>
+
+<script>
+  // Script para controlar os botões de tipo de empregado
+  document.addEventListener('DOMContentLoaded', function() {
+    const botoes = document.querySelectorAll('.tipo-empregado-btn');
+    const inputHidden = document.getElementById('tipoEmpregado');
+    
+    // Definir CLT Normal como ativo por padrão
+    const botaoCLTNormal = document.querySelector('[data-tipo="clt_normal"]');
+    if (botaoCLTNormal) {
+      botaoCLTNormal.classList.add('ativo');
+    }
+    
+    // Adicionar evento de clique para cada botão
+    botoes.forEach(botao => {
+      botao.addEventListener('click', function() {
+        // Remover classe ativo de todos os botões
+        botoes.forEach(b => b.classList.remove('ativo'));
+        
+        // Adicionar classe ativo ao botão clicado
+        this.classList.add('ativo');
+        
+        // Atualizar o valor do input hidden
+        const tipo = this.getAttribute('data-tipo');
+        inputHidden.value = tipo;
+        
+        // Disparar evento de mudança para compatibilidade com o código existente
+        const event = new Event('change');
+        inputHidden.dispatchEvent(event);
+      });
+    });
+  });
+</script>
+
+            
+
+  </main>
+    <br>
+      <br>
+</body>
+</html>

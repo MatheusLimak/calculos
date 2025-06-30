@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Administrativo - Calculadora PJ/CLT</title>
+    <link rel='stylesheet' href='tolls.css'>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-image: url('Fundo Tela Gestão estratégica.png');
+            background-size: cover;
+            background-position: center center;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+            height: 100vh;
+            margin: 0;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .section {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            color: #002c5f;
+        }
+
+        .section h2 {
+            color: #002c5f;
+            margin-bottom: 20px;
+            font-size: 20px;
+            border-bottom: 2px solid #002c5f;
+            padding-bottom: 10px;
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid rgba(0, 44, 95, 0.1);
+        }
+
+        th {
+            background-color: rgba(0, 44, 95, 0.1);
+            font-weight: bold;
+            color: #002c5f;
+        }
+
+        input[type="number"] {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid rgba(0, 44, 95, 0.2);
+            border-radius: 4px;
+            font-size: 14px;
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        input[type="number"]:focus {
+            outline: none;
+            border-color: #002c5f;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: #002c5f;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #0053a0;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #218838;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #c82333;
+        }
+
+        .actions {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .info-box {
+            background: rgba(227, 242, 253, 0.8);
+            border: 1px solid rgba(25, 118, 210, 0.3);
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .info-box h3 {
+            color: #1976d2;
+            margin-bottom: 10px;
+        }
+
+        .info-box p {
+            color: #002c5f;
+            line-height: 1.5;
+        }
+
+        .logout-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 8px 15px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .success-message {
+            background: rgba(212, 237, 218, 0.9);
+            color: #155724;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            display: none;
+            border: 1px solid rgba(21, 87, 36, 0.2);
+        }
+
+        .error-message {
+            background: rgba(248, 215, 218, 0.9);
+            color: #721c24;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            display: none;
+            border: 1px solid rgba(114, 28, 36, 0.2);
+        }
+
+        .add-row-btn {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .add-row-btn:hover {
+            background: #218838;
+        }
+
+        .remove-row-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .remove-row-btn:hover {
+            background: #c82333;
+        }
+
+        .tab-navigation {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            justify-content: center;
+        }
+
+        .tab-btn {
+            padding: 12px 24px;
+            border: 2px solid #002c5f;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.2);
+            color: #002c5f;
+        }
+
+        .tab-btn:hover {
+            background: rgba(0, 44, 95, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .tab-btn.active {
+            background: #002c5f;
+            color: white;
+            box-shadow: 0 4px 8px rgba(0, 44, 95, 0.3);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            color: #002c5f;
+        }
+
+        .stat-card h3 {
+            color: #1976d2;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        .stat-card p {
+            color: #002c5f;
+            font-size: 24px;
+            font-weight: bold;
+            margin: 0;
+        }
+
+        .historico-empty {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+  <header class='navbar'>
+    <img src='logo-engeform-neg_cop.PNG' alt='Logo Engeform' class='logo' href='index.html'>
+    <nav class='menu'>
+      
+    </nav>
+    <a href="#" class="logout-btn" onclick="logout()">Sair</a>
+  </header>
+
+  <div class="container">
+    <h1 style="text-align:center; color:#002c5f; font-size:24px; margin: 30px 0 20px 0;">Painel Administrativo</h1>
+    
+    <!-- Sistema de Navegação por Abas -->
+    <div class="tab-navigation">
+      <button class="tab-btn active" onclick="showTab('configuracoes')">⚙️ Configurações</button>
+      <button class="tab-btn" onclick="showTab('historico')">📊 Histórico de Acessos</button>
+    </div>
+
+    <!-- Aba de Configurações -->
+    <div id="configuracoes" class="tab-content active">
+      <div class="section">
+        <h2>📋 Instruções</h2>
+        <p>• Configure as tabelas de IRRF e INSS conforme as atualizações anuais da Receita Federal</p>
+        <p>• As alterações são salvas automaticamente no navegador</p>
+        <p>• Para restaurar os valores padrão, clique em "Restaurar Padrão"</p>
+      </div>
+
+      <div id="successMessage" class="success-message">
+          Configurações salvas com sucesso!
+      </div>
+
+      <div id="errorMessage" class="error-message">
+          Erro ao salvar configurações!
+      </div>
+
+      <!-- Tabela IRRF -->
+      <div class="section">
+          <h2>📊 Tabela IRRF (Imposto de Renda Retido na Fonte)</h2>
+          <div class="actions">
+              <button class="btn btn-primary" onclick="saveIRRF()">Salvar IRRF</button>
+              <button class="btn btn-secondary" onclick="restoreDefaultIRRF()">Restaurar Padrão</button>
+              <button class="btn btn-success add-row-btn" onclick="addIRRFRow()">+ Adicionar Faixa</button>
+          </div>
+          
+          <div class="table-container">
+              <table id="irrfTable">
+                  <thead>
+                      <tr>
+                          <th>Faixa</th>
+                          <th>Limite Superior (R$)</th>
+                          <th>Alíquota (%)</th>
+                          <th>Parcela a Deduzir (R$)</th>
+                          <th>Ações</th>
+                      </tr>
+                  </thead>
+                  <tbody id="irrfTableBody">
+                      <!-- Dados serão carregados via JavaScript -->
+                  </tbody>
+              </table>
+          </div>
+      </div>
+
+      <!-- Tabela INSS -->
+      <div class="section">
+          <h2>📊 Tabela INSS (Instituto Nacional do Seguro Social)</h2>
+          <div class="actions">
+              <button class="btn btn-primary" onclick="saveINSS()">Salvar INSS</button>
+              <button class="btn btn-secondary" onclick="restoreDefaultINSS()">Restaurar Padrão</button>
+              <button class="btn btn-success add-row-btn" onclick="addINSSRow()">+ Adicionar Faixa</button>
+          </div>
+          
+          <div class="table-container">
+              <table id="inssTable">
+                  <thead>
+                      <tr>
+                          <th>Faixa</th>
+                          <th>Limite Superior (R$)</th>
+                          <th>Alíquota (%)</th>
+                          <th>Ações</th>
+                      </tr>
+                  </thead>
+                  <tbody id="inssTableBody">
+                      <!-- Dados serão carregados via JavaScript -->
+                  </tbody>
+              </table>
+          </div>
+      </div>
+
+      <!-- Outras Configurações -->
+      <div class="section">
+          <h2>⚙️ Outras Configurações</h2>
+          <div class="actions">
+              <button class="btn btn-primary" onclick="saveOtherConfigs()">Salvar Configurações</button>
+              <button class="btn btn-secondary" onclick="restoreDefaultOtherConfigs()">Restaurar Padrão</button>
+          </div>
+          
+          <table>
+              <tr>
+                  <th>Configuração</th>
+                  <th>Valor</th>
+                  <th>Descrição</th>
+              </tr>
+              <tr>
+                  <td><strong>Valor por Dependente (IRRF)</strong></td>
+                  <td><input type="number" id="valorPorDependente" step="0.01" min="0"></td>
+                  <td>Valor dedutível por dependente no IRRF</td>
+              </tr>
+              <tr>
+                  <td><strong>Desconto Simplificado (IRRF)</strong></td>
+                  <td><input type="number" id="descontoSimplificado" step="0.01" min="0"></td>
+                  <td>Desconto simplificado para IRRF</td>
+              </tr>
+              <tr>
+                  <td><strong>Teto INSS</strong></td>
+                  <td><input type="number" id="tetoINSS" step="0.01" min="0"></td>
+                  <td>Valor máximo para cálculo do INSS</td>
+              </tr>
+              <tr>
+                  <td><strong>Valor Máximo INSS</strong></td>
+                  <td><input type="number" id="valorMaximoINSS" step="0.01" min="0"></td>
+                  <td>Valor máximo a ser pago de INSS</td>
+              </tr>
+              <tr>
+                  <td><strong>Custo Contador (R$)</strong></td>
+                  <td><input type="number" id="custoContador" step="0.01" min="0"></td>
+                  <td>Custo mensal do contador para PJ</td>
+              </tr>
+          </table>
+      </div>
+
+      <!-- Configurações de Adicionais e Diárias -->
+      <div class="section">
+          <h2>💰 Configurações de Adicionais e Diárias</h2>
+          <div class="actions">
+              <button class="btn btn-primary" onclick="saveAdicionaisConfigs()">Salvar Configurações</button>
+              <button class="btn btn-secondary" onclick="restoreDefaultAdicionaisConfigs()">Restaurar Padrão</button>
+          </div>
+          
+          <table>
+              <tr>
+                  <th>Configuração</th>
+                  <th>Valor</th>
+                  <th>Descrição</th>
+              </tr>
+              <tr>
+                  <td><strong>Percentual Adicional de Transferência (%)</strong></td>
+                  <td><input type="number" id="percentualAdicionalTransferencia" step="0.01" min="0" max="100"></td>
+                  <td>Percentual do adicional de transferência sobre o salário bruto</td>
+              </tr>
+              <tr>
+                  <td><strong>Diária de Viagem 1 (R$)</strong></td>
+                  <td><input type="number" id="diariaViagem1" step="0.01" min="0"></td>
+                  <td>Primeira opção de diária de viagem</td>
+              </tr>
+              <tr>
+                  <td><strong>Diária de Viagem 2 (R$)</strong></td>
+                  <td><input type="number" id="diariaViagem2" step="0.01" min="0"></td>
+                  <td>Segunda opção de diária de viagem</td>
+              </tr>
+              <tr>
+                  <td><strong>Diária de Viagem 3 (R$)</strong></td>
+                  <td><input type="number" id="diariaViagem3" step="0.01" min="0"></td>
+                  <td>Terceira opção de diária de viagem</td>
+              </tr>
+              <tr>
+                  <td><strong>Diária de Viagem 4 (R$)</strong></td>
+                  <td><input type="number" id="diariaViagem4" step="0.01" min="0"></td>
+                  <td>Quarta opção de diária de viagem</td>
+              </tr>
+              <tr>
+                  <td><strong>Diária de Viagem 5 (R$)</strong></td>
+                  <td><input type="number" id="diariaViagem5" step="0.01" min="0"></td>
+                  <td>Quinta opção de diária de viagem</td>
+              </tr>
+          </table>
+      </div>
+
+      <!-- Configurações de Custos Empresariais -->
+      <div class="section">
+          <h2>🏢 Configurações de Custos Empresariais</h2>
+          <div class="actions">
+              <button class="btn btn-primary" onclick="saveCustosEmpresaConfigs()">Salvar Configurações</button>
+              <button class="btn btn-secondary" onclick="restoreDefaultCustosEmpresaConfigs()">Restaurar Padrão</button>
+          </div>
+          
+          <h3>Percentuais Comuns (CLT Normal e Aprendiz)</h3>
+          <table>
+              <tr>
+                  <th>Configuração</th>
+                  <th>Valor (%)</th>
+                  <th>Descrição</th>
+              </tr>
+              <tr>
+                  <td><strong>INSS Empresa</strong></td>
+                  <td><input type="number" id="inssEmpresa" step="0.01" min="0" max="100"></td>
+                  <td>Percentual de INSS pago pela empresa</td>
+              </tr>
+              <tr>
+                  <td><strong>RAT (Riscos Ambientais do Trabalho)</strong></td>
+                  <td><input type="number" id="rat" step="0.01" min="0" max="100"></td>
+                  <td>Percentual de RAT pago pela empresa</td>
+              </tr>
+              <tr>
+                  <td><strong>Terceiros</strong></td>
+                  <td><input type="number" id="terceiros" step="0.01" min="0" max="100"></td>
+                  <td>Percentual de terceiros pago pela empresa</td>
+              </tr>
+              <tr>
+                  <td><strong>Percentual de Incidências</strong></td>
+                  <td><input type="number" id="percentualIncidencias" step="0.01" min="0" max="100"></td>
+                  <td>Percentual de incidências sobre férias e 13º</td>
+              </tr>
+              <tr>
+                  <td><strong>Adicional de Férias</strong></td>
+                  <td><input type="number" id="adicionalFerias" step="0.01" min="0" max="100"></td>
+                  <td>Percentual do adicional de férias (1/3)</td>
+              </tr>
+          </table>
+
+          <h3>FGTS por Tipo de Empregado</h3>
+          <table>
+              <tr>
+                  <th>Tipo de Empregado</th>
+                  <th>FGTS (%)</th>
+                  <th>Descrição</th>
+              </tr>
+              <tr>
+                  <td><strong>CLT Normal</strong></td>
+                  <td><input type="number" id="fgtsCltNormal" step="0.01" min="0" max="100"></td>
+                  <td>Percentual de FGTS para CLT normal</td>
+              </tr>
+              <tr>
+                  <td><strong>Aprendiz</strong></td>
+                  <td><input type="number" id="fgtsAprendiz" step="0.01" min="0" max="100"></td>
+                  <td>Percentual de FGTS para aprendiz</td>
+              </tr>
+              <tr>
+                  <td><strong>Estagiário</strong></td>
+                  <td><input type="number" id="fgtsEstagiario" step="0.01" min="0" max="100"></td>
+                  <td>Percentual de FGTS para estagiário</td>
+              </tr>
+              <tr>
+                  <td><strong>PJ</strong></td>
+                  <td><input type="number" id="fgtsPj" step="0.01" min="0" max="100"></td>
+                  <td>Percentual de FGTS para PJ</td>
+              </tr>
+          </table>
+      </div>
+
+      <!-- Tabela PLR -->
+      <div class="section">
+          <h2>📊 Tabela IRRF sobre PLR (Participação nos Lucros ou Resultados)</h2>
+          <div class="actions">
+              <button class="btn btn-primary" onclick="savePLR()">Salvar PLR</button>
+              <button class="btn btn-secondary" onclick="restoreDefaultPLR()">Restaurar Padrão</button>
+              <button class="btn btn-success add-row-btn" onclick="addPLRRow()">+ Adicionar Faixa</button>
+          </div>
+          
+          <div class="table-container">
+              <table id="plrTable">
+                  <thead>
+                      <tr>
+                          <th>Faixa</th>
+                          <th>Limite Superior (R$)</th>
+                          <th>Alíquota (%)</th>
+                          <th>Parcela a Deduzir (R$)</th>
+                          <th>Ações</th>
+                      </tr>
+                  </thead>
+                  <tbody id="plrTableBody">
+                      <!-- Dados serão carregados via JavaScript -->
+                  </tbody>
+              </table>
+          </div>
+      </div>
+
+      <!-- Tabela PJ -->
+      <div class="section">
+          <h2>📊 Tabela PJ (Pessoa Jurídica - Simples Nacional)</h2>
+          <div class="actions">
+              <button class="btn btn-primary" onclick="savePJ()">Salvar PJ</button>
+              <button class="btn btn-secondary" onclick="restoreDefaultPJ()">Restaurar Padrão</button>
+              <button class="btn btn-success add-row-btn" onclick="addPJRow()">+ Adicionar Faixa</button>
+          </div>
+          
+          <div class="table-container">
+              <table id="pjTable">
+                  <thead>
+                      <tr>
+                          <th>Faixa</th>
+                          <th>Limite Superior (R$)</th>
+                          <th>Alíquota (%)</th>
+                          <th>Parcela a Deduzir (R$)</th>
+                          <th>Ações</th>
+                      </tr>
+                  </thead>
+                  <tbody id="pjTableBody">
+                      <!-- Dados serão carregados via JavaScript -->
+                  </tbody>
+              </table>
+          </div>
+      </div>
+    </div>
+
+    <!-- Aba de Histórico de Acessos -->
+    <div id="historico" class="tab-content">
+      <div class="section">
+        <h2>📊 Histórico de Acessos ao Site</h2>
+        <div class="actions">
+          <button class="btn btn-primary" onclick="carregarHistorico()">🔄 Atualizar</button>
+          <button class="btn btn-secondary" onclick="limparHistorico()">🗑️ Limpar Histórico</button>
+          <button onclick="exportarHistoricoCSV()" class="btn btn-secondary">
+            📊 Exportar CSV
+          </button>
+        </div>
+        
+        <div class="stats-container">
+          <div class="stat-card">
+            <h3>Total de Acessos</h3>
+            <p id="totalAcessos">0</p>
+          </div>
+          <div class="stat-card">
+            <h3>Acessos Hoje</h3>
+            <p id="acessosHoje">0</p>
+          </div>
+          <div class="stat-card">
+            <h3>Acessos Únicos</h3>
+            <p id="acessosUnicos">0</p>
+          </div>
+        </div>
+        
+        <div class="table-container">
+          <table id="historicoTable" class="data-table">
+            <thead>
+              <tr>
+                <th>Data/Hora</th>
+                <th>Página</th>
+                <th>IP</th>
+                <th>Navegador</th>
+                <th>Sistema</th>
+                <th>Dispositivo</th>
+                <th>Nome</th>
+                <th>Email</th>
+                <th>Empresa</th>
+                <th>Cargo</th>
+                <th>Setor</th>
+                <th>Motivo</th>
+                <th>Identificado</th>
+              </tr>
+            </thead>
+            <tbody id="historicoTableBody">
+              <!-- Dados serão carregados aqui -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="admin_config.js"></script>
+  <script>
+    // Verificação de autenticação mais segura
+    (function() {
+        // Proteção contra inspeção de elementos
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+        });
+
+        document.addEventListener('keydown', function(e) {
+            // Desabilitar F12, Ctrl+Shift+I, Ctrl+U
+            if (e.key === 'F12' || 
+                (e.ctrlKey && e.shiftKey && e.key === 'I') ||
+                (e.ctrlKey && e.key === 'u')) {
+                e.preventDefault();
+                return false;
+            }
+        });
+
+        // Função para verificar se a sessão é válida
+        function isSessionValid() {
+            try {
+                const sessionData = localStorage.getItem('adminSession');
+                if (!sessionData) {
+                    console.log('Nenhuma sessão encontrada');
+                    return false;
+                }
+
+                const session = JSON.parse(sessionData);
+                console.log('Dados da sessão:', session);
+                
+                // Verificar se a sessão expirou (2 horas)
+                if (Date.now() > session.expiresAt) {
+                    console.log('Sessão expirada');
+                    localStorage.removeItem('adminSession');
+                    return false;
+                }
+
+                console.log('Sessão válida');
+                return true;
+            } catch (error) {
+                console.error('Erro ao verificar sessão:', error);
+                localStorage.removeItem('adminSession');
+                return false;
+            }
+        }
+
+        // Verificar autenticação ao carregar a página
+        if (!isSessionValid()) {
+            alert('Sessão expirada ou inválida. Por favor, faça login novamente.');
+            window.location.href = 'admin_login.html';
+            return;
+        }
+
+        // Inicializar o painel admin após verificação de autenticação
+        if (typeof initAdminPanel === 'function') {
+            initAdminPanel();
+        } else {
+            console.log('Função initAdminPanel não encontrada, aguardando carregamento...');
+            // Aguardar um pouco e tentar novamente
+            setTimeout(() => {
+                if (typeof initAdminPanel === 'function') {
+                    initAdminPanel();
+                } else {
+                    console.error('Erro: initAdminPanel não foi carregada');
+                }
+            }, 100);
+        }
+
+        // Função de logout mais segura
+        window.logout = function() {
+            if (confirm('Tem certeza que deseja sair?')) {
+                // Limpar dados de sessão
+                localStorage.removeItem('adminSession');
+                
+                // Limpar outros dados sensíveis
+                localStorage.removeItem('adminLoggedIn');
+                localStorage.removeItem('adminLoginTime');
+                
+                // Redirecionar para login
+                window.location.href = 'admin_login.html';
+            }
+        };
+
+        // Verificar sessão periodicamente (a cada 10 minutos)
+        setInterval(function() {
+            if (!isSessionValid()) {
+                alert('Sua sessão expirou. Você será redirecionado para a página de login.');
+                window.location.href = 'admin_login.html';
+            }
+        }, 10 * 60 * 1000);
+
+        // Limpar dados sensíveis ao sair da página
+        window.addEventListener('beforeunload', function() {
+            // Não limpar a sessão aqui, apenas dados temporários se houver
+        });
+
+        // Funções para gerenciar abas
+        window.showTab = function(tabName) {
+            // Esconder todas as abas
+            const tabContents = document.querySelectorAll('.tab-content');
+            tabContents.forEach(tab => tab.classList.remove('active'));
+            
+            // Remover classe active de todos os botões
+            const tabBtns = document.querySelectorAll('.tab-btn');
+            tabBtns.forEach(btn => btn.classList.remove('active'));
+            
+            // Mostrar aba selecionada
+            document.getElementById(tabName).classList.add('active');
+            
+            // Adicionar classe active ao botão clicado
+            event.target.classList.add('active');
+            
+            // Se for a aba de histórico, carregar os dados
+            if (tabName === 'historico') {
+                carregarHistorico();
+            }
+        };
+
+        // Funções para gerenciar histórico de acessos
+        window.carregarHistorico = function() {
+            try {
+                const historico = JSON.parse(localStorage.getItem('siteHistorico') || '[]');
+                const tbody = document.getElementById('historicoTableBody');
+                
+                if (historico.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="6" class="historico-empty">Nenhum acesso registrado ainda</td></tr>';
+                    atualizarEstatisticas(historico);
+                    return;
+                }
+                
+                // Ordenar por data (mais recente primeiro)
+                historico.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+                
+                tbody.innerHTML = '';
+                historico.forEach(acesso => {
+                    const row = document.createElement('tr');
+                    const data = new Date(acesso.timestamp);
+                    const dataFormatada = data.toLocaleString('pt-BR');
+                    
+                    row.innerHTML = `
+                        <td>${dataFormatada}</td>
+                        <td>${acesso.pagina}</td>
+                        <td>${acesso.ip}</td>
+                        <td>${acesso.navegador}</td>
+                        <td>${acesso.sistema}</td>
+                        <td>${acesso.dispositivo}</td>
+                        <td>${acesso.nome}</td>
+                        <td>${acesso.email}</td>
+                        <td>${acesso.empresa}</td>
+                        <td>${acesso.cargo}</td>
+                        <td>${acesso.setor}</td>
+                        <td>${acesso.motivo}</td>
+                        <td>${acesso.identificado ? 'Sim' : 'Não'}</td>
+                    `;
+                    tbody.appendChild(row);
+                });
+                
+                atualizarEstatisticas(historico);
+                
+            } catch (error) {
+                console.error('Erro ao carregar histórico:', error);
+            }
+        };
+
+        window.atualizarEstatisticas = function(historico) {
+            const totalAcessos = historico.length;
+            const hoje = new Date().toDateString();
+            const acessosHoje = historico.filter(acesso => 
+                new Date(acesso.timestamp).toDateString() === hoje
+            ).length;
+            
+            // Contar acessos únicos (por IP)
+            const ipsUnicos = new Set(historico.map(acesso => acesso.ip));
+            const acessosUnicos = ipsUnicos.size;
+            
+            document.getElementById('totalAcessos').textContent = totalAcessos;
+            document.getElementById('acessosHoje').textContent = acessosHoje;
+            document.getElementById('acessosUnicos').textContent = acessosUnicos;
+        };
+
+        window.limparHistorico = function() {
+            if (confirm('Tem certeza que deseja limpar todo o histórico de acessos?')) {
+                localStorage.removeItem('siteHistorico');
+                carregarHistorico();
+                showMessage('success', 'Histórico limpo com sucesso!');
+            }
+        };
+
+        function exportarHistoricoCSV() {
+            const historico = JSON.parse(localStorage.getItem('siteHistorico') || '[]');
+            if (historico.length === 0) {
+                alert('Nenhum histórico para exportar.');
+                return;
+            }
+
+            // Cabeçalho do CSV
+            const headers = [
+                'Data/Hora',
+                'Página',
+                'IP',
+                'Navegador',
+                'Sistema',
+                'Dispositivo',
+                'Nome',
+                'Email',
+                'Empresa',
+                'Cargo',
+                'Setor',
+                'Motivo',
+                'Identificado'
+            ];
+
+            // Dados do CSV
+            const csvData = historico.map(acesso => [
+                new Date(acesso.timestamp).toLocaleString('pt-BR'),
+                acesso.pagina,
+                acesso.ip,
+                acesso.navegador,
+                acesso.sistema,
+                acesso.dispositivo,
+                acesso.nome || 'Não identificado',
+                acesso.email || 'Não informado',
+                acesso.empresa || 'Não informado',
+                acesso.cargo || 'Não informado',
+                acesso.setor || 'Não informado',
+                acesso.motivo || 'Não informado',
+                acesso.identificado ? 'Sim' : 'Não'
+            ]);
+
+            // Combinar cabeçalho e dados
+            const csvContent = [headers, ...csvData]
+                .map(row => row.map(cell => `"${cell}"`).join(','))
+                .join('\n');
+
+            // Criar e baixar arquivo
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            link.setAttribute('href', url);
+            link.setAttribute('download', `historico_acessos_${new Date().toISOString().split('T')[0]}.csv`);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+    })();
+  </script>
+</body>
+</html> 

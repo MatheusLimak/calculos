@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang='pt-BR'>
+<head>
+  <script src="config_helper.js"></script>
+  <script src="dinamic_values.js"></script>
+  <script src="tolls_detalhado.js"></script>
+  <script src="distribuicao_beneficio.js"></script>
+  <script src="site_tracker.js"></script>
+  <link rel='stylesheet' href='tolls.css'>  
+  <meta charset='UTF-8'>
+  <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+  <title>Conversão CLT para PJ</title>
+</head>
+<body>
+  <!-- Tela de Carregamento -->
+
+  
+  <div id='loading-overlay' class='loading-overlay'>
+    <div class='spinner'></div>
+    <div class='loading-text'>Carregando<span class='dot'>.</span><span class='dot'>.</span><span class='dot'>.</span></div>
+  </div>
+
+
+  <header class='navbar'>
+    <img src='logo-engeform-neg_cop.PNG' alt='Logo Engeform' class='logo' href='index.html'>
+    <nav class='menu'>
+      <a href='index.html'>Início</a>
+      
+    </nav>
+  </header>
+  <div id="cabeçalhomenu" class="options" style="display: flex; gap: 0; align-items: stretch; margin-top: 0; justify-content: center;">
+    <a class='cartaomenu' href='calculocustoempregados.html' style="margin:0; height: 10px; border-radius: 0 0 0 0; border: none; background: #fff; cursor: pointer;">
+      <div class='card-header' style="height: 8px; font-size: 0.85em;">Calculo de Custo de Empregado</div>
+    </a>
+    <a class='cartaomenu' href='CalculoINSSeIRRF.html' style="margin:0; height: 10px; border-radius: 0 0 0 0; border: none; background: #fff; cursor: pointer;">
+      <div class='card-header' style="height: 8px; font-size: 0.85em;">Calculo de INSS e IRRF</div>
+    </a>
+    <a class='cartaomenu' href='ConversaoCLTparaPJ.html' style="margin:0; height: 10px; border-radius: 0 0 0 0; border: none; background: #fff; cursor: pointer;">
+      <div class='card-header' style="height: 8px; font-size: 0.85em;">Conversão CLT para PJ</div>
+    </a>
+    <a class='cartaomenu' href='ConversaoPJparaCLT.html' style="margin:0; height: 10px; border-radius: 0 0 0 0; border: none; background: #fff; cursor: pointer;">
+      <div class='card-header' style="height: 8px; font-size: 0.85em;">Conversão PJ para CLT</div>
+    </a>    
+  </div>
+
+
+  <main class='container'>
+    <section class='intro'>
+      <h1 style="text-align: center;">Conversão CLT para PJ</h1>
+      <div style='display: flex; gap: 40px; flex-wrap: wrap; margin-top: 20px;'>
+        <div class='input-box' style='flex: 1; min-width: 200px;'>
+          <label for='salario' class='textDescription'>Informe o Salário Bruto CLT (R$):</label><br><br>
+          <input class='card_radio' type='number' id='salario' step='0.01' placeholder='Ex: 7000,00'>
+        </div>
+        
+        <div class='input-box' style='flex: 1; min-width: 200px;'>
+          <label for='salario_bruto' class='textDescription'>Salário Mensal PJ Sugerido (R$):</label><br><br>
+          <input 
+            class='card_radio disabled-input' ;
+            type='number' ;
+            id='salario_bruto' ;
+            step='0.01' ;
+            placeholder='...' 
+            disabled 
+            style= background-color:transparent;color:gray;
+          >
+        </div>
+        
+        <script class="calc">
+          // Sua variável já calculada, exemplo:
+          const melhorSalario = 0.00;
+          document.getElementById('salario_bruto').placeholder = melhorSalario;
+        </script>
+        </div>  
+      <div class='input-box'>
+        <label for='diaria' class='textDescription'>Selecione a Diária de Viagem (R$):</label>
+        <div class='card_radio textDescription' id='diaria' style='display: flex; gap: 40px; flex-wrap: wrap; margin-top: 10px; width: 100%; min-height: 50px;'>
+          <label><input type='radio' name='diaria' value='0'> R$ 0,00</label>
+          <label><input type='radio' name='diaria' value='668.80'> R$ 668,80</label>
+          <label><input type='radio' name='diaria' value='900.00'> R$ 900,00</label>
+          <label><input type='radio' name='diaria' value='1776.50'> R$ 1.776,50</label>
+          <label><input type='radio' name='diaria' value='2821.50'> R$ 2.821,50</label>
+        </div>
+             
+      </div>
+      <div class='input-box'>
+        <label for='adicional' class='textDescription' style='display: block; margin-bottom: 15px;'>Adicional de Transferência:</label>
+        <select id='adicional'>
+          <option value='NÃO'>NÃO</option>
+          <option value='SIM'>SIM</option>
+        </select>
+      </div>
+        
+                  <div style='display: flex; gap: 20px; flex-wrap: wrap; margin-top: 20px;'>
+                    <div class='input-box' style='flex: 1; min-width: 200px;'>
+                      <label for='tributaveis' class='textDescription'>Outros valores Tributáveis (R$):</label><br><br>
+                      <input class='card_radio' type='number' id='tributaveis' step='0.01' placeholder='Ex: 1000.00'>
+                    </div>
+
+                    <div class='input-box' style='flex: 1; min-width: 200px;'>
+                        <label for='naoTributaveis' class='textDescription'>Outros valores Não Tributáveis (R$):</label><br><br>
+                        <input class='card_radio' type='number' id='naoTributaveis' step='0.01' placeholder='Ex: 500.00'>
+                    </div>
+                  </div>
+                  <button class='btn' onclick='executarComLoading()'>Encontrar Salário PJ Aproximado</button>
+                  <br>
+                  <br>
+                  <div id ="quantidadedecalculosloading" class="card">O sistema precisou execultar exatamente '<span id='tentativas'>0</span>' calculos para encontrar o Salário PJ</div>
+            </div>
+    
+            </div>
+            <div class="group" style="display: flex; gap: 0; align-items: stretch;" >
+
+              <div class='cartao' style="margin:0; height: 55px;">
+                <div class='card-header' style="height: 12px; font-size: 0.85em;">Salário PJ (Mensal)</div>
+                <span class="spancard" id='SALARIOPJ' style="font-size: 1em; line-height: 30px;">0</span>
+              </div>
+              <div class='cartao' style="margin:0; height: 55px;">
+                <div class='card-header' style="height: 12px; font-size: 0.85em;">Salário CLT (Mensal)</div>
+                <span class="spancard" id='SALARIOCLT' style="font-size: 1em; line-height: 30px;">0</span>
+              </div>
+              
+            </div>
+
+            <div class="group" style="display: flex; gap: 0; align-items: stretch;">
+
+              <div class='cartao' style="margin:0; height: 55px;">
+                <div class='card-header' style="height: 12px; font-size: 0.85em;">Custo PJ (Anual)</div>
+                <span class="spancard" id='CUSTOPJ' style="font-size: 1em; line-height: 30px;">0</span>
+              </div>
+
+              <div class='cartao' style="margin:0; height: 55px;">
+                <div class='card-header' style="height: 12px; font-size: 0.85em;">Custo CLT (Anual)</div>
+                <span class="spancard" id='CUSTOCLT' style="font-size: 1em; line-height: 30px;">0</span>
+              </div>             
+
+              
+
+              <div class='cartao' style="margin:0; height: 55px;">
+                <div class='card-header' style="height: 12px; font-size: 0.85em;">Liquido PJ (Anual)</div>
+                <span class="spancard" id='LIQUIDOTOTALPJ' style="font-size: 1em; line-height: 30px;">0</span>
+              </div>
+              
+              <div class='cartao' style="margin:0; height: 55px;">
+                <div class='card-header' style="height: 12px; font-size: 0.85em;">Liquido CLT (Anual)</div>
+                <span class="spancard" id='LIQUIDOTOTALCLT' style="font-size: 1em; line-height: 30px;">0</span>
+              </div>
+
+              <div class='cartaoresultado' style="margin-left:10px; height: 55px;">
+                <div class='card-header' style="height: 15px; font-size: 0.85em;">Resultado (Anual)</div>
+                <span class="spancardresultado" id='VANTAGEMECONOMICACUSTO' style="font-size: 1em; line-height: 30px;">0</span>
+              </div> 
+              
+            </div>
+            
+    </section>
+    <br>
+    <div class='cards'>
+      <div class='card' id='cltCard'>
+        <h2 style='text-align: center'>PJ</h2>
+        <div id='resultadoPJ'></div>
+     </div>
+
+      <div class='card' id='pjCard'>
+        <h2 style='text-align: center'>CLT</h2>
+        <div id='resultadoCLT'></div>
+      </div>
+      
+    </div>
+
+    <!-- Seção de Distribuição do Benefício -->
+    <div id="distribuicao-beneficio" style="display: none; margin-top: 30px;">
+      <div class="card" style="background: rgba(255, 255, 255, 0.2); backdrop-filter: blur(10px); border: 2px solid rgba(255, 255, 255, 0.2); max-width: 100%; margin: 0 auto; padding: 20px;">
+        <div class="card-header" style="color: #002c5f; font-size: 1.5rem; margin-bottom: 15px;"></div>
+        
+        <div style="text-align: center; margin-bottom: 20px;">
+          <p class="textDescription" style="margin-bottom: 10px;">
+            <strong>Benefício Anual:</strong> <span id="valor-beneficio" style="color: #002c5f; font-weight: bold;"></span>
+          </p>
+          <p style="font-size: 14px; color: #666;">
+            Deseja distribuir um percentual do benefício com o empregado?
+          </p>
+        </div>
+
+        <div style="display: flex; gap: 20px; align-items: center; justify-content: center; flex-wrap: wrap; margin-bottom: 20px;">
+          <button id="btn-distribuir-sim" class="btn" style="background: #002c5f;">
+            Sim, distribuir
+          </button>
+          <button id="btn-distribuir-nao" class="btn" style="background: #6c757d;">
+            Não, manter como está
+          </button>
+        </div>
+
+        <div id="opcoes-distribuicao" style="display: none;">
+          <div style="text-align: center; margin-bottom: 20px;">
+            <label for="percentual-distribuicao" class="textDescription" style="display: block; margin-bottom: 10px;">
+              Selecione o percentual do benefício a ser distribuído:
+            </label>
+            <select id="percentual-distribuicao" class="card_radio" style="width: auto; min-width: 200px;">
+              <option value="1">1%</option>
+              <option value="5">5%</option>
+              <option value="10">10%</option>
+              <option value="15">15%</option>
+              <option value="20">20%</option>
+              <option value="25">25%</option>
+              <option value="30">30%</option>
+              <option value="35">35%</option>
+              <option value="40">40%</option>
+              <option value="45">45%</option>
+              <option value="50">50%</option>
+            </select>
+          </div>
+
+          <div style="text-align: center; margin-bottom: 20px;">
+            <button id="btn-calcular-distribuicao" class="btn btn-distribuicao">
+              Calcular Distribuição
+            </button>
+          </div>
+
+          <div id="resultado-distribuicao" style="display: none;">
+            <h4 style="text-align: center; color: #002c5f; margin-bottom: 15px; font-weight: bold;">Resultado da Distribuição</h4>
+            <div class="group" style="margin-bottom: 10px; gap: 16px; justify-content: center;">
+              <div class="card resultado-card compacto">
+                <div class="card-header">Valor a Distribuir (Anual)</div>
+                <span class="spancard resultado-valor" id="valor-distribuir"></span>
+              </div>
+              <div class="card resultado-card compacto">
+                <div class="card-header">Valor a Distribuir (Mensal)</div>
+                <span class="spancard resultado-valor" id="valor-distribuir-mensal"></span>
+              </div>
+            </div>
+            <div class="group" style="margin-bottom: 10px; gap: 16px; justify-content: center;">
+              <div class="card resultado-card compacto">
+                <div class="card-header">Salário PJ (Mensal)</div>
+                <span class="spancard resultado-valor" id="novo-salario-pj"></span>
+              </div>
+              <div class="card resultado-card compacto">
+                <div class="card-header">Líquido PJ (Anual)</div>
+                <span class="spancard resultado-valor" id="novo-liquido-pj"></span>
+              </div>
+              <div class="card resultado-card compacto">
+                <div class="card-header">Benefício Final (Anual)</div>
+                <span class="spancard resultado-valor" id="novo-beneficio"></span>
+              </div>
+            </div>
+            <div style="text-align: center;">
+              <button id="btn-aplicar-distribuicao" class="btn" style="background: #002c5f; margin-right: 10px;">
+                Aplicar Distribuição
+              </button>
+              <button id="btn-cancelar-distribuicao" class="btn" style="background: #dc3545;">
+                Cancelar
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="text-align: right; margin-top: 20px;">
+      <button class="btn" onclick="window.print()">Salvar</button>
+    </div>
+
+    <style>
+      @media print {
+        html, body {
+          width: 100%;
+          height: 100%;
+          margin: 0 !important;
+          padding: 0 !important;
+          background: white !important;
+          box-sizing: border-box;
+        }
+        body {
+          zoom: 50%;
+          margin: 20mm 10mm 20mm 10mm !important;
+          -webkit-print-color-adjust: exact !important;
+          print-color-adjust: exact !important;
+          background: white !important;
+        }
+        .navbar, .btn {
+          display: none !important;
+        }
+        #cabeçalhomenu {
+          display: none !important;
+        }
+        #distribuicao-beneficio {
+          display: none !important;
+        }
+        * {
+          -webkit-print-color-adjust: exact !important;
+          print-color-adjust: exact !important;
+        }
+        main.container {
+          background: white !important;
+          box-shadow: none !important;
+          width: 100% !important;
+          min-height: 100vh !important;
+          margin: 0 !important;
+          padding: 0 !important;
+        }
+        @page {
+          size: A4 portrait;
+          margin: 20mm 10mm 20mm 10mm;
+          background: white;
+        }
+      }
+
+      /* Estilos para os cards de distribuição */
+      #distribuicao-beneficio .cartao:hover {
+        transform: scale(1.02) translateY(-2px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+      }
+
+      #distribuicao-beneficio .cartao {
+        cursor: pointer;
+      }
+
+      .resultado-card {
+        background: #fff !important;
+        border-radius: 10px !important;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.12) !important;
+        border: none !important;
+        min-width: 200px;
+        max-width: 260px;
+        padding: 0.7rem 0.7rem !important;
+        transition: box-shadow 0.2s, transform 0.2s;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin: 0;
+      }
+      .resultado-card.compacto {
+        min-height: 90px;
+        max-height: 110px;
+        padding: 0.5rem 0.7rem !important;
+      }
+      .resultado-card:hover {
+        box-shadow: 0 8px 32px rgba(0,44,95,0.18), 0 1.5px 40px rgba(0,0,0,0.12);
+        transform: translateY(-2px) scale(1.01);
+      }
+      .resultado-card .card-header {
+        color: #002c5f !important;
+        font-weight: bold;
+        font-size: 1.05rem;
+        text-align: center;
+        margin-bottom: 0.2rem;
+      }
+      .resultado-valor {
+        color: #222 !important;
+        font-size: 1.15rem !important;
+        font-weight: bold !important;
+        text-align: center;
+        margin-top: 0.1rem;
+      }
+      .group {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 16px;
+        justify-content: center;
+      }
+      .btn-distribuicao {
+        background: #002c5f !important;
+        color: #fff !important;
+        border: none !important;
+        border-radius: 8px !important;
+        font-size: 1rem !important;
+        font-weight: bold !important;
+        padding: 0.8rem 2rem !important;
+        margin-top: 1rem;
+        margin-bottom: 1rem;
+        cursor: pointer;
+        transition: background 0.2s, box-shadow 0.2s;
+        box-shadow: 0 2px 8px rgba(0,44,95,0.08);
+      }
+      .btn-distribuicao:hover {
+        background: #0053a0 !important;
+        box-shadow: 0 4px 16px rgba(0,44,95,0.15);
+      }
+    </style>
+            
+
+  </main>
+    <br>
+      <br>
+</body>
+</html>

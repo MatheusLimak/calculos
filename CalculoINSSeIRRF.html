@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang='pt-BR'>
+<head>
+  <script src="config_helper.js"></script>
+  <script src="dinamic_values.js"></script>
+  <script src="tolls.js"></script>
+  <script src="site_tracker.js"></script>
+  <link rel='stylesheet' href='tolls.css'>  
+  <meta charset='UTF-8'>
+  <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+  <title>Calculo INSS e IRRF</title>
+</head>
+<body>
+
+  <!-- Tela de Carregamento -->
+  <div id='loading-overlay' class='loading-overlay'>
+    <div class='spinner'></div>
+    <div class='loading-text'>Carregando<span class='dot'>.</span><span class='dot'>.</span><span class='dot'>.</span></div>
+  </div>
+  <header class='navbar'>
+    <img src='logo-engeform-neg_cop.PNG' alt='Logo Engeform' class='logo' href='index.html'>
+    <nav class='menu'>
+      <a href='index.html'>Início</a>
+      
+    </nav>
+  </header>
+
+  <div id="cabeçalhomenu" class="options" style="display: flex; gap: 0; align-items: stretch; margin-top: 0; justify-content: center;">
+    <a class='cartaomenu' href='calculocustoempregados.html' style="margin:0; height: 10px; border-radius: 0 0 0 0; border: none; background: #fff; cursor: pointer;">
+      <div class='card-header' style="height: 8px; font-size: 0.85em;">Calculo de Custo de Empregado</div>
+    </a>
+    <a class='cartaomenu' href='CalculoINSSeIRRF.html' style="margin:0; height: 10px; border-radius: 0 0 0 0; border: none; background: #fff; cursor: pointer;">
+      <div class='card-header' style="height: 8px; font-size: 0.85em;">Calculo de INSS e IRRF</div>
+    </a>
+    <a class='cartaomenu' href='ConversaoCLTparaPJ.html' style="margin:0; height: 10px; border-radius: 0 0 0 0; border: none; background: #fff; cursor: pointer;">
+      <div class='card-header' style="height: 8px; font-size: 0.85em;">Conversão CLT para PJ</div>
+    </a>
+    <a class='cartaomenu' href='ConversaoPJparaCLT.html' style="margin:0; height: 10px; border-radius: 0 0 0 0; border: none; background: #fff; cursor: pointer;">
+      <div class='card-header' style="height: 8px; font-size: 0.85em;">Conversão PJ para CLT</div>
+    </a>    
+  </div>
+
+
+  <main class='container'>
+    <section class='intro'>
+      <h1 style="text-align: center;">Calculo de INSS e IRRF</h1>
+      <div style="display: flex; gap: 20px; flex-wrap: wrap; margin-top: 20px;">
+        <div class='input-box' style='flex: 1; min-width: 200px;'>
+          <label for='salario' class='textDescription'>Informe o salário mensal bruto (R$):</label>
+          <br><br>
+          <input class='card_radio' type='number' id='salario' step='0.01' placeholder='Ex: 7000.00'>
+        </div>
+        <div class='input-box' style='flex: 1; min-width: 200px;'>
+          <label for='tributaveis' class='textDescription'>Outros valores Tributáveis (R$):</label>
+          <br><br>
+          <input class='card_radio' type='number' id='tributaveis' step='0.01' placeholder='Ex: 1000.00'>
+        </div>
+        <div class='input-box' style='flex: 1; min-width: 200px;'>
+          <label for='tributaveis' class='textDescription'>Quantidade de Dependentes</label>
+          <br><br>
+          <input class='card_radio' type='number' id='quantidadedependentes' step='0.01' placeholder='Ex: (1, 2, 3...)'>
+        </div>
+      </div>
+      
+
+      <div class='input-box' style="display: none;">
+        <label for='diaria' class='textDescription'>Selecione a Diária de Viagem (R$):</label>
+        <div class='card_radio' id='diaria' style='display: flex; gap: 16px; flex-wrap: wrap; margin-top: 10px;'>
+          <label><input type='radio' name='diaria' value='0'> R$ 0,00</label>
+          <label><input type='radio' name='diaria' value='668.80'> R$ 668,80</label>
+          <label><input type='radio' name='diaria' value='900.00'> R$ 900,00</label>
+          <label><input type='radio' name='diaria' value='1776.50'> R$ 1.776,50</label>
+          <label><input type='radio' name='diaria' value='2821.50'> R$ 2.821,50</label>
+        </div>
+      </div>
+             
+      </div>
+      <div class='input-box'>
+        <label for='adicional' class='textDescription'>Adicional de Transferência (25% sobre o salário bruto):</label>
+        <select id='adicional'>
+          <option value='NÃO'>NÃO</option>
+          <option value='SIM'>SIM</option>
+        </select>
+        <br>
+        
+        
+          <div class='input-box' style='flex: 1; min-width: 200px; display: none;'>
+            <label for='naoTributaveis' class='textDescription'>Outros valores Não Tributáveis (R$):</label><br><br>
+            <input class='card_radio' type='number' id='naoTributaveis' step='0.01' placeholder='Ex: 500.00'>
+          </div>
+        </div>
+        
+      </div>
+      <button class='btn' onclick='calcularComparativo()'>Calcular</button>
+    </section>
+    <br>
+    <div class='cards'>
+    <div class='card' id='pjCard' style='display: none;'>
+      <h2 style='text-align: center'>PJ</h2>
+      <div id='resultadoPJ'></div>
+    </div>
+      <div class='card' id='cltCard' >
+        <h2 style='text-align: center' >Desconto de INSS (Mensal)</h2>
+        <div id='VALORINSSDESCONTO' style="font-size: 25px; justify-content: center; text-align: center; font-weight: bold;"></div>
+      </div>
+        <div class='card' id='cltCard'>
+        <h2 style='text-align: center'> Desconto de IRRF (Mensal)</h2>
+        <div id='VALORIRRFDESCONTO' style="font-size: 25px; justify-content: center; text-align: center; font-weight: bold;"></div>
+      </div>
+    </div>
+  </main>
+</body>
+</html>

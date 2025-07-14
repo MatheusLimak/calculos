@@ -1,0 +1,966 @@
+<!DOCTYPE html>
+<html lang='pt-BR'>
+<head>
+  <link rel='stylesheet' href='tolls.css'>
+  <meta charset='UTF-8'>
+  <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+  <title>Calculadora de Custo - Engeform</title>
+  <script src="config_helper.js" defer></script>
+  <script src="site_tracker.js"></script>
+  <script src='tolls.js' defer></script>
+  <style>
+    .admin-link {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      font-size: 12px;
+      color: #666;
+      text-decoration: none;
+      opacity: 0.7;
+      transition: opacity 0.3s;
+      z-index: 10;
+    }
+    .admin-link:hover {
+      opacity: 1;
+    }
+    
+    .blog-container {
+      max-width: 1200px;
+      margin: 2rem auto;
+      padding: 2rem;
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(10px);
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      position: relative;
+      min-height: 400px;
+    }
+    
+    .blog-post {
+      display: none;
+      animation: fadeIn 0.5s ease-in-out;
+    }
+    
+    .blog-post.active {
+      display: block;
+    }
+    
+    .blog-post h2 {
+      color: #002c5f;
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+    
+    .blog-post table {
+      width: 100%;
+      margin: 1rem 0;
+      border-collapse: collapse;
+      background: white;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    
+    .blog-post th {
+      background: #002c5f;
+      color: white;
+      padding: 12px;
+      text-align: left;
+      font-weight: bold;
+    }
+    
+    .blog-post td {
+      padding: 10px;
+      border-bottom: 1px solid #eee;
+    }
+    
+    .blog-post tr:nth-child(even) {
+      background: #f9f9f9;
+    }
+    
+    .blog-post ul {
+      list-style-position: inside;
+      padding-left: 0;
+      margin: 1rem 0;
+    }
+    
+    .blog-post li {
+      margin: 0.5rem 0;
+      padding: 0.5rem;
+      background: rgba(255,255,255,0.8);
+      border-radius: 4px;
+    }
+    
+    .post-indicators {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 20px;
+    }
+    
+    .post-indicator {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.5);
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    
+    .post-indicator.active {
+      background: #002c5f;
+    }
+    
+    .progress-bar {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      height: 4px;
+      background: #002c5f;
+      width: 0;
+      transition: width 0.1s linear;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-image: url('Fundo Tela Gestão estratégica.png');
+      background-size: cover;
+      background-position: center center;
+      background-attachment: fixed;
+      background-repeat: no-repeat;
+      min-height: 100vh;
+      color: #002c5f;
+      padding-bottom: 100px;
+    }
+
+    /* Estilos para o botão do usuário no cabeçalho original */
+    .navbar {
+      position: relative;
+    }
+
+    .navbar .user-info {
+      position: absolute;
+      top: 50%;
+      right: 50px;
+      transform: translateY(-50%);
+    }
+
+    .btn-user {
+      background: rgba(255, 255, 255, 0.3);
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      color: #002c5f;
+      padding: 8px 16px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(5px);
+    }
+
+    .btn-user:hover {
+      background: rgba(255, 255, 255, 0.5);
+      border-color: #002c5f;
+    }
+
+    .btn-user span#userName {
+      color: #fff;
+      font-weight: bold;
+    }
+
+    /* Modal de informações do usuário */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(5px);
+    }
+
+    .modal-content {
+      background: rgba(255, 255, 255, 0.95);
+      margin: 5% auto;
+      padding: 30px;
+      border-radius: 10px;
+      width: 90%;
+      max-width: 500px;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 15px;
+      border-bottom: 2px solid #002c5f;
+    }
+
+    .modal-header h2 {
+      color: #002c5f;
+      margin: 0;
+    }
+
+    .close {
+      color: #002c5f;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+      background: none;
+      border: none;
+    }
+
+    .close:hover {
+      color: #0053a0;
+    }
+
+    .user-details {
+      margin-bottom: 20px;
+    }
+
+    .user-details p {
+      margin: 10px 0;
+      padding: 8px;
+      background: rgba(0, 44, 95, 0.1);
+      border-radius: 5px;
+    }
+
+    .user-details strong {
+      color: #002c5f;
+    }
+
+    .modal-buttons {
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end;
+    }
+
+    .btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: all 0.3s ease;
+    }
+
+    .btn-primary {
+      background: #002c5f;
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: #0053a0;
+    }
+
+    .btn-secondary {
+      background: #6c757d;
+      color: white;
+    }
+
+    .btn-secondary:hover {
+      background: #5a6268;
+    }
+
+    /* Resto dos estilos existentes */
+    .home-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .post-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 30px;
+      margin-top: 40px;
+    }
+
+    .post-card {
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(10px);
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      border-radius: 15px;
+      padding: 30px;
+      text-align: center;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .post-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+      border-color: rgba(255, 255, 255, 0.4);
+    }
+
+    .post-card h2 {
+      color: #002c5f;
+      margin-bottom: 15px;
+      font-size: 24px;
+    }
+
+    .post-card p {
+      color: #002c5f;
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+
+    .post-card .icon {
+      font-size: 48px;
+      margin-bottom: 20px;
+      display: block;
+    }
+
+    .post-card .btn {
+      background: #002c5f;
+      color: white;
+      padding: 12px 24px;
+      border: none;
+      border-radius: 25px;
+      text-decoration: none;
+      display: inline-block;
+      font-weight: bold;
+      transition: all 0.3s ease;
+    }
+
+    .post-card .btn:hover {
+      background: #0053a0;
+      transform: translateY(-2px);
+    }
+
+    @media (max-width: 768px) {
+      .header {
+        flex-direction: column;
+        text-align: center;
+        padding: 20px;
+      }
+
+      .user-info {
+        position: static;
+        margin-top: 15px;
+      }
+
+      .post-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+
+      .modal-content {
+        width: 95%;
+        margin: 10% auto;
+        padding: 20px;
+      }
+    }
+
+    /* Estilos para as animações de notificação */
+    @keyframes slideIn {
+      from {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    @keyframes slideOut {
+      from {
+        transform: translateX(0);
+        opacity: 1;
+      }
+      to {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+    }
+
+    /* Estilos para o formulário de identificação */
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      color: #002c5f;
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+    .form-group input, .form-group select {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-radius: 5px;
+      font-size: 16px;
+      transition: border-color 0.3s ease;
+      background: rgba(255, 255, 255, 0.9);
+    }
+
+    .form-group input:focus, .form-group select:focus {
+      outline: none;
+      border-color: #002c5f;
+    }
+
+    .info-box {
+      background: rgba(227, 242, 253, 0.8);
+      border: 1px solid rgba(25, 118, 210, 0.3);
+      border-radius: 5px;
+      padding: 15px;
+      margin-bottom: 20px;
+    }
+
+    .info-box h3 {
+      color: #1976d2;
+      margin-bottom: 10px;
+      font-size: 16px;
+    }
+
+    .info-box p {
+      color: #002c5f;
+      line-height: 1.5;
+      font-size: 14px;
+    }
+
+    .required {
+      color: #e74c3c;
+    }
+
+    @media (max-width: 768px) {
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @keyframes shake {
+      10%, 90% {
+        transform: translate3d(-1px, 0, 0);
+      }
+      20%, 80% {
+        transform: translate3d(2px, 0, 0);
+      }
+      30%, 50%, 70% {
+        transform: translate3d(-4px, 0, 0);
+      }
+      40%, 60% {
+        transform: translate3d(4px, 0, 0);
+      }
+    }
+
+    /* Estilos para o rodapé */
+    footer {
+      background: rgba(0, 0, 0, 0.8);
+      color: white;
+      padding: 20px;
+      text-align: center;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    footer a {
+      color: white;
+      text-decoration: none;
+      margin: 0 10px;
+      opacity: 0.7;
+      transition: opacity 0.3s;
+    }
+
+    footer a:hover {
+      opacity: 1;
+    }
+
+    footer .admin-link {
+      position: static;
+      top: auto;
+      right: auto;
+      opacity: 0.7;
+      transition: opacity 0.3s;
+    }
+
+    footer .admin-link:hover {
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+  <header class='navbar'>
+    <img src='logo-engeform-neg_cop.PNG' alt='Logo Engeform' class='logo' href='index.html'>
+    <nav class='menu'>
+    </nav>
+    <div class="user-info">
+      <button onclick="mostrarInfoUsuario()" class="btn-user">
+        👤 <span id="userName">Usuário</span>
+      </button>
+    </div>
+    
+  </header>
+  <div class="options" style="display: flex; gap: 0; align-items: stretch; margin-top: 0; justify-content: center;">
+    <a class='cartaomenu' href='calculocustoempregados.html' style="margin:0; height: 10px; border-radius: 0 0 0 0; border: none; background: #fff; cursor: pointer;">
+      <div class='card-header' style="height: 8px; font-size: 0.85em;">Calculo de Custo de Empregado</div>
+    </a>
+    <a class='cartaomenu' href='CalculoINSSeIRRF.html' style="margin:0; height: 10px; border-radius: 0 0 0 0; border: none; background: #fff; cursor: pointer;">
+      <div class='card-header' style="height: 8px; font-size: 0.85em;">Calculo de INSS e IRRF</div>
+    </a>
+    <a class='cartaomenu' href='ConversaoCLTparaPJ.html' style="margin:0; height: 10px; border-radius: 0 0 0 0; border: none; background: #fff; cursor: pointer;">
+      <div class='card-header' style="height: 8px; font-size: 0.85em;">Conversão CLT para PJ</div>
+    </a>
+    <a class='cartaomenu' href='ConversaoPJparaCLT.html' style="margin:0; height: 10px; border-radius: 0 0 0 0; border: none; background: #fff; cursor: pointer;">
+      <div class='card-header' style="height: 8px; font-size: 0.85em;">Conversão PJ para CLT</div>
+    </a>    
+  </div>
+
+  <main class='home-container'>
+    <!-- Container das Postagens -->
+    <div class="blog-container">
+      <div class="progress-bar" id="progressBar"></div>
+      
+      <!-- Postagem 1: Tabela INSS -->
+      <div class="blog-post active" id="post1">
+        <h2>Tabela de Contribuição do INSS – 2025</h2>
+        <p>Confira as faixas salariais e as respectivas alíquotas de contribuição ao INSS para 2025:</p>
+        <div id="inssTable"></div>
+      </div>
+      
+      <!-- Postagem 2: Tabela IRRF -->
+      <div class="blog-post" id="post2">
+        <h2>Tabela do Imposto de Renda – 2025</h2>
+        <p>A tabela do Imposto de Renda Retido na Fonte (IRRF) foi atualizada para 2025. Confira as faixas de rendimento, alíquotas e parcelas a deduzir:</p>
+        <div id="irrfTable"></div>
+        <div id="irrfDeductions"></div>
+      </div>
+      
+      <!-- Postagem 3: Tabela PLR -->
+      <div class="blog-post" id="post3">
+        <h2>Tabela de IRRF sobre PLR – 2025</h2>
+        <p>A tributação sobre a PLR segue uma tabela exclusiva, distinta da aplicada aos salários mensais:</p>
+        <div id="plrTable"></div>
+        <div id="plrObservations"></div>
+      </div>
+      
+      <!-- Postagem 4: Tabela PJ -->
+      <div class="blog-post" id="post4">
+        <h2>Tabela de Tributação PJ – Simples Nacional 2025</h2>
+        <p>Se você atua como PJ no regime do Simples Nacional, confira as faixas válidas para 2025:</p>
+        <div id="pjTable"></div>
+        <div id="pjCalculation"></div>
+      </div>
+  
+      <!-- Indicadores de Postagem -->
+      <div class="post-indicators">
+        <div class="post-indicator active" onclick="showPost(0)"></div>
+        <div class="post-indicator" onclick="showPost(1)"></div>
+        <div class="post-indicator" onclick="showPost(2)"></div>
+        <div class="post-indicator" onclick="showPost(3)"></div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Rodapé -->
+  <footer style="
+    background: rgba(0, 0, 0, 0.7);
+    color: #fff;
+    text-align: center;
+    padding: 15px;
+    font-size: 12px;
+    backdrop-filter: blur(10px);
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+  ">
+    <div>
+      Criado por <strong>Matheus Santos</strong>, Analista de Business Intelligence, Engeform
+    </div>
+    <div>
+      <a href="admin_login.html" style="color: #ccc; text-decoration: none; opacity: 0.6; transition: opacity 0.3s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.6'">⚙️ Admin</a>
+    </div>
+  </footer>
+
+  <!-- Modal de Identificação -->
+  <div id="identificacaoModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>👋 Bem-vindo</h2>
+        <p>Identifique-se para continuar</p>
+      </div>
+      
+      <div class="info-box">
+        <h3>ℹ️ Por que pedimos sua identificação?</h3>
+        <p>Para melhorar nossos serviços e fornecer suporte personalizado, gostaríamos de saber um pouco sobre você. Suas informações são mantidas em segurança e não serão compartilhadas.</p>
+      </div>
+
+      <form id="identificacaoForm">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="nome">Nome <span class="required">*</span></label>
+            <input type="text" id="nome" name="nome" required placeholder="Seu nome completo">
+          </div>
+          <div class="form-group">
+            <label for="email">Email <span class="required">*</span></label>
+            <input type="email" id="email" name="email" required placeholder="seu@email.com">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="empresa">Empresa/Instituição</label>
+            <input type="text" id="empresa" name="empresa" placeholder="Nome da empresa">
+          </div>
+          <div class="form-group">
+            <label for="cargo">Cargo/Função</label>
+            <input type="text" id="cargo" name="cargo" placeholder="Seu cargo atual">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="setor">Setor de Atuação</label>
+            <select id="setor" name="setor">
+              <option value="">Selecione...</option>
+              <option value="Contabilidade">Contabilidade</option>
+              <option value="Recursos Humanos">Recursos Humanos</option>
+              <option value="Administração">Administração</option>
+              <option value="Financeiro">Financeiro</option>
+              <option value="Jurídico">Jurídico</option>
+              <option value="Consultoria">Consultoria</option>
+              <option value="Educação">Educação</option>
+              <option value="Outro">Outro</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="motivo">Motivo do Acesso</label>
+            <select id="motivo" name="motivo">
+              <option value="">Selecione...</option>
+              <option value="Cálculo para Cliente">Cálculo para Cliente</option>
+              <option value="Estudo/Análise">Estudo/Análise</option>
+              <option value="Consultoria">Consultoria</option>
+              <option value="Educação">Educação</option>
+              <option value="Pessoal">Pessoal</option>
+              <option value="Outro">Outro</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="modal-buttons">
+          <button type="submit" class="btn btn-primary">🚀 Continuar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal de Informações do Usuário -->
+  <div id="userModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>👤 Informações do Usuário</h2>
+        <button class="close" onclick="fecharModal()">&times;</button>
+      </div>
+      <div class="user-details" id="userDetails">
+        <!-- Dados do usuário serão carregados aqui -->
+      </div>
+      <div class="modal-buttons">
+        <button class="btn btn-secondary" onclick="editarInformacoes()">✏️ Editar</button>
+        <button class="btn btn-primary" onclick="fecharModal()">Fechar</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // --- ELEMENTOS DO DOM ---
+      const identificacaoModal = document.getElementById('identificacaoModal');
+      const identificacaoForm = document.getElementById('identificacaoForm');
+      const userModal = document.getElementById('userModal');
+      const userNameDisplay = document.getElementById('userName');
+
+      // --- ESTADO ---
+      let currentPost = 0;
+      let postInterval;
+      let progressInterval;
+
+      // --- DADOS ---
+      const postsData = [
+        { id: 'post1', title: 'Tabela de Contribuição do INSS – 2025', type: 'inss' },
+        { id: 'post2', title: 'Tabela do Imposto de Renda – 2025', type: 'irrf' },
+        { id: 'post3', title: 'Tabela de IRRF sobre PLR – 2025', type: 'plr' },
+        { id: 'post4', title: 'Tabela de Tributação PJ – Simples Nacional 2025', type: 'pj' }
+      ];
+
+      // --- FUNÇÕES DE INICIALIZAÇÃO E LÓGICA PRINCIPAL ---
+
+      const init = () => {
+        setupEventListeners();
+        checkUserIdentification();
+      };
+
+      const checkUserIdentification = () => {
+        const userInfo = JSON.parse(localStorage.getItem('dadosUsuario'));
+        if (userInfo && userInfo.identificado) {
+          updateUserName(userInfo.nome);
+          initializePageContent();
+        } else {
+          showIdentificationModal();
+        }
+      };
+
+      const initializePageContent = () => {
+        loadPostData();
+        startCarousel();
+      };
+
+      const showIdentificationModal = () => {
+        identificacaoModal.style.display = 'block';
+      };
+
+      // --- MANIPULADORES DE EVENTOS ---
+
+      const setupEventListeners = () => {
+        identificacaoForm.addEventListener('submit', handleIdentificationSubmit);
+        window.addEventListener('click', handleWindowClick);
+        document.querySelector('.btn-user').addEventListener('click', mostrarInfoUsuario);
+        document.querySelector('.close').addEventListener('click', fecharModal);
+        document.querySelector('.btn-secondary').addEventListener('click', editarInformacoes);
+        document.querySelectorAll('.post-indicator').forEach((indicator, index) => {
+          indicator.addEventListener('click', () => showPost(index));
+        });
+      };
+
+      const handleIdentificationSubmit = (e) => {
+        e.preventDefault();
+        const formData = new FormData(e.target);
+        const dadosUsuario = {
+          nome: formData.get('nome'),
+          email: formData.get('email'),
+          empresa: formData.get('empresa') || 'Não informado',
+          cargo: formData.get('cargo') || 'Não informado',
+          setor: formData.get('setor') || 'Não informado',
+          motivo: formData.get('motivo') || 'Não informado',
+          dataIdentificacao: new Date().toISOString(),
+          identificado: true
+        };
+
+        localStorage.setItem('dadosUsuario', JSON.stringify(dadosUsuario));
+        localStorage.setItem('usuarioIdentificado', 'true'); // Manter para compatibilidade se outra página usar
+
+        identificacaoModal.style.display = 'none';
+        updateUserName(dadosUsuario.nome);
+        mostrarMensagemBoasVindas(dadosUsuario.nome);
+        initializePageContent();
+        registrarAcessoIdentificado(dadosUsuario); // Função do site_tracker.js
+      };
+
+      const handleWindowClick = (event) => {
+        if (event.target === identificacaoModal) {
+          const modalContent = identificacaoModal.querySelector('.modal-content');
+          modalContent.style.animation = 'shake 0.5s';
+          setTimeout(() => {
+            modalContent.style.animation = '';
+          }, 500);
+        }
+        if (event.target === userModal) {
+          fecharModal();
+        }
+      };
+
+      // --- FUNÇÕES DO CARROSSEL DE POSTS ---
+
+      function loadPostData() {
+        try {
+          if (typeof loadTaxConfig !== 'function') {
+            console.error('loadTaxConfig não está disponível');
+            return;
+          }
+          const config = loadTaxConfig();
+          if (!config || !config.inss || !config.irrf || !config.plr || !config.pj) {
+            console.error('Configurações não carregadas corretamente:', config);
+            return;
+          }
+          
+          // Gerar tabelas... (lógica mantida)
+          let inssHTML = '<table><thead><tr><th>Faixa Salarial (R$)</th><th>Alíquota (%)</th></tr></thead><tbody>';
+          config.inss.forEach(faixa => {
+            const limite = faixa.limite === Infinity ? 'Acima de ' + config.inss[config.inss.length - 2].limite.toLocaleString('pt-BR') : 'Até ' + faixa.limite.toLocaleString('pt-BR');
+            inssHTML += `<tr><td>${limite}</td><td>${(faixa.aliquota * 100).toFixed(1)}%</td></tr>`;
+          });
+          inssHTML += '</tbody></table>';
+          document.getElementById('inssTable').innerHTML = inssHTML;
+          
+          let irrfHTML = '<table><thead><tr><th>Base de Cálculo Mensal (R$)</th><th>Alíquota (%)</th><th>Parcela a Deduzir (R$)</th></tr></thead><tbody>';
+          config.irrf.forEach(faixa => {
+            const limite = faixa.limite === Infinity ? 'Acima de ' + config.irrf[config.irrf.length - 2].limite.toLocaleString('pt-BR') : 'Até ' + faixa.limite.toLocaleString('pt-BR');
+            const aliquota = faixa.aliquota === 0 ? 'Isento' : (faixa.aliquota * 100).toFixed(1) + '%';
+            irrfHTML += `<tr><td>${limite}</td><td>${aliquota}</td><td>${faixa.deducao.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</td></tr>`;
+          });
+          irrfHTML += '</tbody></table>';
+          document.getElementById('irrfTable').innerHTML = irrfHTML;
+          
+          const irrfDeductionsHTML = `
+            <h3>Deduções Adicionais</h3>
+            <ul>
+              <li><strong>Dedução por dependente:</strong> R$ ${config.other.valorPorDependente.toLocaleString('pt-BR', {minimumFractionDigits: 2})} por mês</li>
+              <li><strong>Desconto simplificado mensal:</strong> R$ ${config.other.descontoSimplificado.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</li>
+            </ul>`;
+          document.getElementById('irrfDeductions').innerHTML = irrfDeductionsHTML;
+        
+          // Tabela PLR (dinâmica do admin panel)
+          let plrHTML = '<table><thead><tr><th>Faixa de Rendimento Anual (R$)</th><th>Alíquota (%)</th><th>Parcela a Deduzir (R$)</th></tr></thead><tbody>';
+          config.plr.forEach(faixa => {
+            const limite = faixa.limite === Infinity ? 'Acima de ' + config.plr[config.plr.length - 2].limite.toLocaleString('pt-BR') : 'Até ' + faixa.limite.toLocaleString('pt-BR');
+            const aliquota = faixa.aliquota === 0 ? 'Isento' : (faixa.aliquota * 100).toFixed(1) + '%';
+            plrHTML += `<tr><td>${limite}</td><td>${aliquota}</td><td>${faixa.deducao.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</td></tr>`;
+          });
+          plrHTML += '</tbody></table>';
+          document.getElementById('plrTable').innerHTML = plrHTML;
+
+          // Tabela PJ (dinâmica do admin panel)
+          let pjHTML = '<table><thead><tr><th>Faixa</th><th>Limite de Receita Bruta Anual (R$)</th><th>Alíquota (%)</th><th>Parcela a Deduzir (R$)</th></tr></thead><tbody>';
+          config.pj.forEach((faixa, index) => {
+            const limite = faixa.limite === Infinity ? 'Acima de ' + config.pj[config.pj.length - 2].limite.toLocaleString('pt-BR') : 'Até ' + faixa.limite.toLocaleString('pt-BR');
+            pjHTML += `<tr><td>${index + 1}ª Faixa</td><td>${limite}</td><td>${(faixa.aliquota * 100).toFixed(1)}%</td><td>R$ ${faixa.deducao.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</td></tr>`;
+          });
+          pjHTML += '</tbody></table>';
+          document.getElementById('pjTable').innerHTML = pjHTML;
+
+        } catch (error) {
+          console.error('Erro ao carregar postagens:', error);
+        }
+      }
+
+      function startCarousel() {
+        if (postInterval) clearInterval(postInterval);
+        showPost(0); 
+      }
+
+      function showPost(index) {
+        currentPost = index;
+        const posts = document.querySelectorAll('.blog-post');
+        const indicators = document.querySelectorAll('.post-indicator');
+        
+        posts.forEach(p => p.classList.remove('active'));
+        indicators.forEach(i => i.classList.remove('active'));
+        
+        posts[index].classList.add('active');
+        indicators[index].classList.add('active');
+        
+        resetProgress();
+      }
+
+      function nextPost() {
+        const nextIndex = (currentPost + 1) % postsData.length;
+        showPost(nextIndex);
+      }
+
+      function resetProgress() {
+        const progressBar = document.getElementById('progressBar');
+        if (progressInterval) clearInterval(progressInterval);
+        
+        let progress = 0;
+        progressBar.style.width = '0%';
+        
+        progressInterval = setInterval(() => {
+          progress += 1;
+          progressBar.style.width = progress + '%';
+          if (progress >= 100) {
+            nextPost();
+          }
+        }, 100); // 10s
+      }
+
+      // --- FUNÇÕES DE UI AUXILIARES ---
+
+      function updateUserName(nome) {
+        userNameDisplay.textContent = nome.split(' ')[0];
+      }
+
+      function mostrarMensagemBoasVindas(nome) {
+        const notificacao = document.createElement('div');
+        notificacao.style.cssText = `
+          position: fixed; top: 20px; right: 20px; background: #28a745; color: white;
+          padding: 15px 20px; border-radius: 5px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+          z-index: 10000; animation: slideIn 0.3s ease;`;
+        notificacao.innerHTML = `👋 Bem-vindo, ${nome}!`;
+        document.body.appendChild(notificacao);
+
+        setTimeout(() => {
+          notificacao.style.animation = 'slideOut 0.3s ease';
+          setTimeout(() => {
+            if (document.body.contains(notificacao)) {
+              document.body.removeChild(notificacao);
+            }
+          }, 300);
+        }, 3000);
+      }
+
+      window.mostrarInfoUsuario = () => {
+        const dadosUsuario = JSON.parse(localStorage.getItem('dadosUsuario') || 'null');
+        const userDetails = document.getElementById('userDetails');
+        if (dadosUsuario) {
+          userDetails.innerHTML = `
+            <p><strong>Nome:</strong> ${dadosUsuario.nome}</p>
+            <p><strong>Email:</strong> ${dadosUsuario.email}</p>
+            <p><strong>Empresa:</strong> ${dadosUsuario.empresa}</p>
+            <p><strong>Cargo:</strong> ${dadosUsuario.cargo}</p>
+            <p><strong>Setor:</strong> ${dadosUsuario.setor}</p>
+            <p><strong>Motivo:</strong> ${dadosUsuario.motivo}</p>
+            <p><strong>Data:</strong> ${new Date(dadosUsuario.dataIdentificacao).toLocaleString('pt-BR')}</p>`;
+        } else {
+          userDetails.innerHTML = `<p>Usuário não identificado.</p>`;
+        }
+        userModal.style.display = 'block';
+      };
+
+      window.fecharModal = () => {
+        userModal.style.display = 'none';
+      };
+
+      window.editarInformacoes = () => {
+        userModal.style.display = 'none';
+        showIdentificationModal();
+      };
+
+      // --- FUNÇÕES GLOBAIS (se houver, como as do site_tracker.js) ---
+      // A função registrarAcessoIdentificado é chamada no submit do form.
+      // Ela deve existir no escopo global (vinda de site_tracker.js)
+      
+      // --- INICIA A APLICAÇÃO ---
+      init();
+    });
+
+    document.addEventListener('contextmenu', event => event.preventDefault());
+  </script>
+</body>
+</html>

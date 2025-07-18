@@ -36,7 +36,7 @@ const DEFAULT_CONFIG = {
     },
     adicionais: {
         percentualAdicionalTransferencia: 25.0,
-        diariasViagem: [0, 668.80, 900.00, 1776.50, 2821.50]
+        diariasViagem: [0, 708.93, 954.00, 1883.09, 2990.79]
     }
 };
 
@@ -157,7 +157,7 @@ function loadTaxConfig() {
         },
         adicionais: {
             percentualAdicionalTransferencia: 25.0,
-            diariasViagem: [0, 668.80, 900.00, 1776.50, 2821.50]
+            diariasViagem: [0, 708.93, 954.00, 1883.09, 2990.79]
         },
         custosEmpresa: {
             inssEmpresa: 20.0,

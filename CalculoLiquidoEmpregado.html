@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cálculo Líquido Empregado</title>
+  <link rel="stylesheet" href="tolls.css">
+  <script src="config_helper.js"></script>
+  <script src="calculo_liquido_ajustado.js"></script>
+  <script src="dinamic_values.js"></script>
+  <script src="site_tracker.js"></script>
+  <script src="custo_empregado.js"></script>
+</head>
+<body>
+  <header class="navbar">
+    <img src="logo-engeform-neg_cop.PNG" alt="Logo Engeform" class="logo" href="index.html">
+    <nav class="menu">
+      <a href="index.html">Início</a>
+    </nav>
+  </header>
+  <main class="container">
+    <section class="intro">
+      <h1 style="text-align: center;">Cálculo Líquido Empregado</h1>
+      <p style="text-align: center; max-width: 700px; margin: 0 auto 20px auto;">
+        Esta ferramenta permite calcular qual salário bruto é necessário para que o empregado receba um valor líquido desejado, somando um ajuste extra ao líquido original. Informe os dados normalmente e, se desejar, adicione um valor extra ao líquido (ex: bônus, benefício, ajuste). O sistema irá sugerir o salário bruto ideal para atingir o líquido desejado.
+      </p>
+      <form id="form-calculo-liquido" class="form-grid" style="max-width: 700px; margin: 0 auto;">
+        <div class="input-box">
+          <label for="salarioBruto">Salário Bruto Inicial (R$):</label>
+          <input type="number" id="salarioBruto" step="0.01" placeholder="Ex: 5000,00" required>
+        </div>
+        <div class="input-box">
+          <label for="tipoEmpregado">Tipo de Empregado:</label>
+          <select id="tipoEmpregado">
+            <option value="clt_normal">CLT Normal</option>
+            <option value="aprendiz">CLT Aprendiz</option>
+            <option value="estagiario">Estagiário</option>
+            <option value="pj">PJ</option>
+          </select>
+        </div>
+        <div class="input-box">
+          <label for="dependentes">Número de Dependentes:</label>
+          <input type="number" id="dependentes" min="0" max="10" value="0" placeholder="0">
+        </div>
+        <div class="input-box">
+          <label for="diaria">Diária de Viagem (R$):</label>
+          <select id="diaria">
+            <option value="0">R$ 0,00</option>
+            <option value="668.80">R$ 668,80</option>
+            <option value="900.00">R$ 900,00</option>
+            <option value="1776.50">R$ 1.776,50</option>
+            <option value="2821.50">R$ 2.821,50</option>
+          </select>
+        </div>
+        <div class="input-box">
+          <label for="adicional">Adicional de Transferência:</label>
+          <select id="adicional">
+            <option value="NAO">NÃO</option>
+            <option value="SIM">SIM</option>
+          </select>
+        </div>
+        <div class="input-box">
+          <label for="tributaveis">Outros Valores Tributáveis (R$):</label>
+          <input type="number" id="tributaveis" step="0.01" placeholder="Ex: 1000,00">
+        </div>
+        <div class="input-box">
+          <label for="naoTributaveis">Outros Valores Não Tributáveis (R$):</label>
+          <input type="number" id="naoTributaveis" step="0.01" placeholder="Ex: 500,00">
+        </div>
+        <div class="input-box">
+          <label for="ajusteExtra">Ajuste Extra ao Líquido (R$):</label>
+          <input type="number" id="ajusteExtra" step="0.01" placeholder="Ex: 500,00" value="0">
+        </div>
+        <div class="input-box" style="grid-column: 1 / -1; text-align: center;">
+          <button type="submit" class="btn">Calcular Salário Bruto Sugerido</button>
+        </div>
+      </form>
+      <div id="resultado-calculo" style="margin-top: 30px; max-width: 700px; margin-left: auto; margin-right: auto;"></div>
+    </section>
+  </main>
+  <script>
+    // Instanciar a calculadora global do projeto
+    const calculadoraCusto = new CalculadoraCustoEmpregado();
+
+    function calcularLiquidoEmpregado(params) {
+      // Usa a lógica real do painel de cálculo de custo de empregado
+      const resultado = calculadoraCusto.calcularCustoEmpregado({
+        salario: params.salario,
+        tipoEmpregado: params.tipoEmpregado,
+        diaria: params.diaria,
+        adicionalTransferencia: params.adicionalTransferencia,
+        tributaveis: params.tributaveis,
+        naoTributaveis: params.naoTributaveis,
+        dependentes: params.dependentes
+      });
+      // Retorna o líquido mensal calculado corretamente
+      return resultado.descontos.liquidoMensal;
+    }
+
+    document.getElementById('form-calculo-liquido').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const salarioBrutoBase = parseFloat(document.getElementById('salarioBruto').value.replace(',', '.'));
+      const tipoEmpregado = document.getElementById('tipoEmpregado').value;
+      const dependentes = parseInt(document.getElementById('dependentes').value) || 0;
+      const diaria = parseFloat(document.getElementById('diaria').value) || 0;
+      const adicionalTransferencia = document.getElementById('adicional').value === 'SIM';
+      const tributaveis = parseFloat(document.getElementById('tributaveis').value) || 0;
+      const naoTributaveis = parseFloat(document.getElementById('naoTributaveis').value) || 0;
+      const ajusteExtra = parseFloat(document.getElementById('ajusteExtra').value) || 0;
+
+      const params = {
+        salarioBrutoBase,
+        ajusteExtra,
+        tipoEmpregado,
+        diaria,
+        adicionalTransferencia,
+        tributaveis,
+        naoTributaveis,
+        dependentes
+      };
+
+      // Chama a função do novo JS
+      const resultado = calcularSalarioBrutoParaLiquidoAjustado(params, calcularLiquidoEmpregado);
+
+      if (resultado.erro) {
+        document.getElementById('resultado-calculo').innerHTML = `
+          <div class="card card-instrucoes" style="border: 2px solid #c00; color: #c00;">
+            <h2>Erro no cálculo</h2>
+            <p>${resultado.mensagem}</p>
+            <ul>
+              <li><strong>Salário Bruto Testado:</strong> R$ ${resultado.salarioBrutoSugerido.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</li>
+              <li><strong>Líquido Alvo:</strong> R$ ${resultado.liquidoAlvo.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</li>
+              <li><strong>Líquido Final Calculado:</strong> R$ ${resultado.liquidoFinal.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</li>
+              <li><strong>Iterações:</strong> ${resultado.iteracoes}</li>
+            </ul>
+          </div>
+        `;
+      } else {
+        document.getElementById('resultado-calculo').innerHTML = `
+          <div class="card card-instrucoes">
+            <h2>Resultado</h2>
+            <ul>
+              <li><strong>Salário Bruto Sugerido:</strong> R$ ${resultado.salarioBrutoSugerido.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</li>
+              <li><strong>Líquido Alvo:</strong> R$ ${resultado.liquidoAlvo.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</li>
+              <li><strong>Líquido Final Calculado:</strong> R$ ${resultado.liquidoFinal.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</li>
+              <li><strong>Iterações:</strong> ${resultado.iteracoes}</li>
+            </ul>
+            <p style="font-size: 0.95em; color: #555;">O cálculo considera o líquido original acrescido do ajuste extra informado. O resultado é uma sugestão aproximada, podendo variar conforme as regras de descontos reais do seu projeto.</p>
+          </div>
+        `;
+      }
+    });
+  </script>
+</body>
+</html> 

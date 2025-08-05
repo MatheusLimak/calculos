@@ -477,7 +477,7 @@ function atingirLiquidoCLT() {
   }));
   const faixaAplicadaPJ = faixasPJ.find(f => receitaAnualPJ <= f.limite) || faixasPJ[faixasPJ.length - 1];
   const impostoPJmensal = (impostoPJ / 12).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-  const liquidoPJmensal = receitaMensalPJ - (insscontribuicaoindividual + custocontador);
+  const liquidoPJmensal = receitaMensalPJ - (insscontribuicaoindividual + custocontador + (impostoPJ / 12));
 
   document.getElementById('resultadoPJ').innerHTML = `
     <link rel='stylesheet' href='tolls.css'>

@@ -22,12 +22,12 @@ document.addEventListener('DOMContentLoaded', function() {
 function gerarModeloXLSX() {
   const ws_data = [
     ['Nome', 'Salario', 'Tipo de Contrato', 'Diaria', 'Adicional', 'Tributaveis', 'NaoTributaveis', 'Dependentes'],
-    ['(Nome completo)', '(Valor bruto)', '(clt_normal/aprendiz/estagiario/pj)', '(0/668.80/900.00/1776.50/2821.50)', '(SIM/NÃO)', '(Valor tributável)', '(Valor não tributável)', '(Número inteiro)'],
+          ['(Nome completo)', '(Valor bruto)', '(clt_normal/aprendiz/estagiario/pj)', '(0/708.93/954.00/1883.09/2990.79)', '(SIM/NÃO)', '(Valor tributável)', '(Valor não tributável)', '(Número inteiro)'],
     ['João Silva', 5000, 'clt_normal', 0, 'NÃO', 0, 0, 0],
     ['Maria Santos', 3000, 'aprendiz', 0, 'NÃO', 0, 0, 1],
     ['Pedro Costa', 2000, 'estagiario', 0, 'NÃO', 0, 0, 0],
     ['Ana Oliveira', 8000, 'pj', 0, 'NÃO', 0, 0, 2],
-    ['Carlos Lima', 6000, 'clt_normal', 668.80, 'SIM', 500, 200, 1],
+    ['Carlos Lima', 6000, 'clt_normal', 708.93, 'SIM', 500, 200, 1],
     ['Fernanda Costa', 4500, 'clt_normal', 0, 'SIM', 0, 300, 0],
     ['Roberto Silva', 3500, 'aprendiz', 0, 'NÃO', 0, 0, 0]
   ];

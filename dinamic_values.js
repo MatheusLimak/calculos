@@ -44,7 +44,7 @@ function getDiariasViagem() {
         return config.adicionais.diariasViagem;
     } catch (error) {
         console.error('Erro ao obter diárias de viagem:', error);
-        return [0, 668.80, 900.00, 1776.50, 2821.50]; // Valores padrão
+        return [0, 708.93, 954.00, 1883.09, 2990.79]; // Valores padrão
     }
 }
 

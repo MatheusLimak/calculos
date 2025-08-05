@@ -708,9 +708,9 @@
       const userNameDisplay = document.getElementById('userName');
 
       // --- ESTADO ---
-      let currentPost = 0;
-      let postInterval;
-      let progressInterval;
+      window.currentPost = 0;
+      window.postInterval = null;
+      window.progressInterval = null;
 
       // --- DADOS ---
       const postsData = [
@@ -738,6 +738,7 @@
       };
 
       const initializePageContent = () => {
+        console.log('Inicializando conteúdo da página...');
         loadPostData();
         startCarousel();
       };
@@ -798,7 +799,7 @@
 
       // --- FUNÇÕES DO CARROSSEL DE POSTS ---
 
-      function loadPostData() {
+      window.loadPostData = function() {
         try {
           if (typeof loadTaxConfig !== 'function') {
             console.error('loadTaxConfig não está disponível');
@@ -860,38 +861,46 @@
         }
       }
 
-      function startCarousel() {
-        if (postInterval) clearInterval(postInterval);
+      window.startCarousel = function() {
+        if (window.postInterval) clearInterval(window.postInterval);
         showPost(0); 
       }
 
-      function showPost(index) {
-        currentPost = index;
+      window.showPost = function(index) {
+        console.log('Mostrando post:', index);
+        window.currentPost = index;
         const posts = document.querySelectorAll('.blog-post');
         const indicators = document.querySelectorAll('.post-indicator');
+        
+        console.log('Posts encontrados:', posts.length);
+        console.log('Indicadores encontrados:', indicators.length);
         
         posts.forEach(p => p.classList.remove('active'));
         indicators.forEach(i => i.classList.remove('active'));
         
-        posts[index].classList.add('active');
-        indicators[index].classList.add('active');
+        if (posts[index]) {
+          posts[index].classList.add('active');
+        }
+        if (indicators[index]) {
+          indicators[index].classList.add('active');
+        }
         
         resetProgress();
       }
 
-      function nextPost() {
-        const nextIndex = (currentPost + 1) % postsData.length;
+      window.nextPost = function() {
+        const nextIndex = (window.currentPost + 1) % postsData.length;
         showPost(nextIndex);
       }
 
-      function resetProgress() {
+      window.resetProgress = function() {
         const progressBar = document.getElementById('progressBar');
-        if (progressInterval) clearInterval(progressInterval);
+        if (window.progressInterval) clearInterval(window.progressInterval);
         
         let progress = 0;
         progressBar.style.width = '0%';
         
-        progressInterval = setInterval(() => {
+        window.progressInterval = setInterval(() => {
           progress += 1;
           progressBar.style.width = progress + '%';
           if (progress >= 100) {

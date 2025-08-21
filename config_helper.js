@@ -124,6 +124,7 @@ function loadTaxConfig() {
     // Configurações padrão (fallback)
     return {
         irrf: [
+            { limite: 2428.80, aliquota: 0, deducao: 0 },
             { limite: 2826.65, aliquota: 0.075, deducao: 182.16 },
             { limite: 3751.05, aliquota: 0.15, deducao: 394.16 },
             { limite: 4664.68, aliquota: 0.225, deducao: 675.49 },
@@ -142,6 +143,7 @@ function loadTaxConfig() {
             { limite: Infinity, aliquota: 0.275, deducao: 3123.78 }
         ],
         pj: [
+            { limite: 180000, aliquota: 0.06, deducao: 0 },
             { limite: 360000, aliquota: 0.112, deducao: 9360 },
             { limite: 720000, aliquota: 0.135, deducao: 17640 },
             { limite: 1800000, aliquota: 0.16, deducao: 35640 },

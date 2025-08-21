@@ -35,7 +35,7 @@ if (isNaN(salarioBrutoCLT) || salarioBrutoCLT <= 0) {
   const irrfMensal = calcularIRRF(Basedeinss , inssMensal);
   const irrfferias = calcularIRRF(ferias , inssMensal);
   const fgtsmensal = (Basedeinss * (config.custosEmpresa.fgts.clt_normal / 100));
-  const decimoterceiro = (remuneracaoMensal - inssMensal - irrfMensal) + fgtsmensal;
+  const decimoterceiro = (remuneracaoMensal - inssMensal - irrfMensal - diaria ) + fgtsmensal;
   const decimoterceirovisualizer = Basedeinss
   const fgtsferias = (ferias * (config.custosEmpresa.fgts.clt_normal / 100));
   const liquidoferias = ferias - (inssMensal + irrfferias) + fgtsferias ;
@@ -90,9 +90,25 @@ while (tentativa < maxTentativas) {
   const receitaAnual = (receitaMensal * 11) + FeriasPJ;
 
   // Usar tabelas PJ dinâmicas do admin_panel
-  const faixas = config.pj;
+  const faixas = config.pj.map((faixa, index) => ({
+    faixa: `${index + 1}ª Faixa`,
+    limite: faixa.limite,
+    aliquota: faixa.aliquota,
+    deducao: faixa.deducao
+  }));
+  
+  // DEBUG: Log para verificar as faixas e a receita anual
+  console.log('=== DEBUG FAIXA PJ ===');
+  console.log('Receita Anual:', receitaAnual);
+  console.log('Faixas disponíveis:', faixas);
+  
   const faixaAplicada = faixas.find(f => receitaAnual <= f.limite) || faixas[faixas.length - 1];
-  const impostoPJ = (receitaAnual * faixaAplicada.aliquota) - faixaAplicada.deducao;
+  
+  // DEBUG: Log da faixa aplicada
+  console.log('Faixa aplicada:', faixaAplicada);
+  console.log('=== FIM DEBUG ===');
+  
+  const impostoPJ = Math.max(0, (receitaAnual * faixaAplicada.aliquota) - faixaAplicada.deducao);
   const liquidoPJ = receitaAnual - impostoPJ - insscontribuicaoindividualanual - custocontadoranual;
 
   const diferenca = liquidoPJ - liquidoCLTAnual;
@@ -189,8 +205,9 @@ document.getElementById('tentativas').textContent = tentativa.toLocaleString('pt
         aliquota: faixa.aliquota,
         deducao: faixa.deducao
       }));
+      
       const faixaAplicada = faixas.find(f => receitaAnual <= f.limite) || faixas[faixas.length - 1];
-      const impostoPJ = (receitaAnual * faixaAplicada.aliquota) - faixaAplicada.deducao;
+      const impostoPJ = Math.max(0, (receitaAnual * faixaAplicada.aliquota) - faixaAplicada.deducao);
       const impostoPJmensal = impostoPJ / 12;
       const liquidoPJmelhorsalario = (receitaAnual - impostoPJ) - (insscontribuicaoindividualanual + custocontadoranual);
       const liquidoPJmensal = receitaMensal - (insscontribuicaoindividual + custocontador + impostoPJmensal);
@@ -256,15 +273,22 @@ function calcularIRRF(baseBruta, inss, dependentes = 0) {
   const baseSimplificada = baseBruta - descontoSimplificado;
 
   const calcularIR = (base) => {
+    if (base <= 0) return 0;
+    
+    // Verificar se está na faixa isenta (primeira faixa)
+    if (base <= config.irrf[0].limite) {
+      return 0; // Isento
+    }
+    
     // Usar as faixas configuradas dinamicamente
     for (const faixa of config.irrf) {
       if (base <= faixa.limite) {
-        return base * faixa.aliquota - faixa.deducao;
+        return Math.max(0, base * faixa.aliquota - faixa.deducao);
       }
     }
     // Se não encontrar faixa, usar a última
     const ultimaFaixa = config.irrf[config.irrf.length - 1];
-    return base * ultimaFaixa.aliquota - ultimaFaixa.deducao;
+    return Math.max(0, base * ultimaFaixa.aliquota - ultimaFaixa.deducao);
   };
 
   const irrfLegal = calcularIR(baseLegal);
@@ -344,7 +368,7 @@ function atingirLiquidoCLT() {
   // Usar tabelas PJ dinâmicas do admin_panel
   const faixas = config.pj;
   const faixaAplicada = faixas.find(f => receitaAnualPJ <= f.limite) || faixas[faixas.length - 1];
-  const impostoPJ = (receitaAnualPJ * faixaAplicada.aliquota) - faixaAplicada.deducao;
+  const impostoPJ = Math.max(0, (receitaAnualPJ * faixaAplicada.aliquota) - faixaAplicada.deducao);
   const liquidoPJAnual = receitaAnualPJ - impostoPJ - insscontribuicaoindividualanual - custocontadoranual;
 
   // ALGORITMO DE BUSCA BINÁRIA PARA ENCONTRAR SALÁRIO CLT
@@ -370,7 +394,7 @@ function atingirLiquidoCLT() {
     const irrfMensal = calcularIRRF(Basedeinss, inssMensal);
     const irrfferias = calcularIRRF(ferias, inssMensal);
     const fgtsmensal = (Basedeinss * (config.custosEmpresa.fgts.clt_normal / 100));
-    const decimoterceiro = (remuneracaoMensal - inssMensal - irrfMensal) + fgtsmensal;
+    const decimoterceiro = (remuneracaoMensal - inssMensal - irrfMensal - diaria) + fgtsmensal;
     const fgtsferias = (ferias * (config.custosEmpresa.fgts.clt_normal / 100));
     const liquidoferias = ferias - (inssMensal + irrfferias) + fgtsferias;
     const liquidoCLTMensal = (remuneracaoMensal - inssMensal - irrfMensal) + fgtsmensal;
@@ -403,7 +427,7 @@ function atingirLiquidoCLT() {
   const irrfMensal = calcularIRRF(Basedeinss, inssMensal);
   const irrfferias = calcularIRRF(ferias, inssMensal);
   const fgtsmensal = (Basedeinss * (config.custosEmpresa.fgts.clt_normal / 100));
-  const decimoterceiro = (remuneracaoMensal - inssMensal - irrfMensal) + fgtsmensal;
+  const decimoterceiro = (remuneracaoMensal - inssMensal - irrfMensal - diaria) + fgtsmensal;
   const decimoterceirovisualizer = Basedeinss;
   const fgtsferias = (ferias * (config.custosEmpresa.fgts.clt_normal / 100));
   const liquidoferias = ferias - (inssMensal + irrfferias) + fgtsferias;

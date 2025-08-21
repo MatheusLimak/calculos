@@ -188,7 +188,7 @@ class CalculadoraCustoEmpregado {
     // Cálculo do imposto PJ
     const faixas = this.config.pj;
     const faixaAplicada = faixas.find(f => receitaAnual <= f.limite) || faixas[faixas.length - 1];
-    const impostoPJ = (receitaAnual * faixaAplicada.aliquota) - faixaAplicada.deducao;
+    const impostoPJ = Math.max(0, (receitaAnual * faixaAplicada.aliquota) - faixaAplicada.deducao);
     const impostoPJmensal = impostoPJ / 12;
     
     // Líquido PJ
@@ -303,15 +303,20 @@ class CalculadoraCustoEmpregado {
     const calcularIR = (base) => {
       if (base <= 0) return 0;
       
+      // Verificar se está na faixa isenta (primeira faixa)
+      if (base <= this.config.irrf[0].limite) {
+        return 0; // Isento
+      }
+      
       // Usar as faixas configuradas dinamicamente
       for (const faixa of this.config.irrf) {
         if (base <= faixa.limite) {
-          return base * faixa.aliquota - faixa.deducao;
+          return Math.max(0, base * faixa.aliquota - faixa.deducao);
         }
       }
       // Se não encontrar faixa, usar a última
       const ultimaFaixa = this.config.irrf[this.config.irrf.length - 1];
-      return base * ultimaFaixa.aliquota - ultimaFaixa.deducao;
+      return Math.max(0, base * ultimaFaixa.aliquota - ultimaFaixa.deducao);
     };
 
     const irrfLegal = calcularIR(baseLegal);
@@ -501,7 +506,7 @@ class CalculadoraCustoEmpregado {
       deducao: faixa.deducao
     }));
     const faixaAplicada = faixas.find(f => receitaAnual <= f.limite) || faixas[faixas.length - 1];
-    const impostoPJ = (receitaAnual * faixaAplicada.aliquota) - faixaAplicada.deducao;
+    const impostoPJ = Math.max(0, (receitaAnual * faixaAplicada.aliquota) - faixaAplicada.deducao);
     const impostoPJmensal = impostoPJ / 12;
     const liquidoPJ = (receitaAnual - impostoPJ) - (insscontribuicaoindividualanual + custocontadoranual);
     const liquidoPJmensal = receitaMensal - impostoPJmensal - insscontribuicaoindividual - custocontador;

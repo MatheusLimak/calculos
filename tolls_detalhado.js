@@ -143,9 +143,9 @@ document.getElementById('tentativas').textContent = tentativa.toLocaleString('pt
    
     <link rel='stylesheet' href='tolls.css'>
 
-                                    <p class= 'titleresm'>Proventos</p>
+                                   <p class= 'titleresm'>Proventos</p>
 
-        <div<p><strong>Salário Bruto:</strong> R$ ${(salarioBrutoCLT).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} </div>
+        <p><strong>Salário Bruto:</strong> R$ ${(salarioBrutoCLT).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
         <p><strong>Adc. de Transferência:</strong> R$ ${(adicionalCLT).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
          <p><strong>Diária de Viagem:</strong> R$ ${(diaria).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
          <p><strong>Outros Valores Tributáveis:</strong> R$ ${(tributaveis).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
@@ -455,7 +455,7 @@ function atingirLiquidoCLT() {
   document.getElementById('resultadoCLT').innerHTML = `
     <link rel='stylesheet' href='tolls.css'>
     <p class='titleresm'>Proventos</p>
-    <div><p><strong>Salário Bruto:</strong> R$ ${(melhorSalarioCLT).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} </div>
+    <p><strong>Salário Bruto:</strong> R$ ${(melhorSalarioCLT).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
     <p><strong>Adc. de Transferência:</strong> R$ ${(adicionalCLTFinal).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
     <p><strong>Diária de Viagem:</strong> R$ ${(diaria).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
     <p><strong>Outros Valores Tributáveis:</strong> R$ ${(tributaveis).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>

@@ -93,7 +93,7 @@
         </div>
       </div>
       
-      <button class='btn' onclick='executarComLoadingReverso()'>Encontrar Salário CLT Aproximado</button>
+      <button class='btn' onclick='executarComLoadingReverso()'>Encontrar Salário CLT</button>
       <br>
       <br>
       <div id="quantidadedecalculosloading" class="card">O sistema precisou executar exatamente '<span id='tentativas'>0</span>' cálculos para encontrar o Salário CLT</div>
@@ -147,7 +147,8 @@
     </div>
 
     <div style="text-align: right; margin-top: 20px;">
-      <button class="btn" onclick="window.print()">Salvar</button>
+      <button class="btn" style="margin-right: 8px;" onclick="exportarPDFVisaoEmpregado()">Exportar PDF – Visão Empregado</button>
+      <button class="btn" onclick="window.print()">Exportar PDF – Visão Empresa</button>
     </div>
 
     <style>
@@ -195,5 +196,6 @@
   </main>
   <br>
   <br>
+<script src="export_pdf_empregado.js"></script>
 </body>
 </html> 

@@ -102,7 +102,7 @@
                         <input class='card_radio' type='number' id='naoTributaveis' step='0.01' placeholder='Ex: 500.00'>
                     </div>
                   </div>
-                  <button class='btn' onclick='executarComLoading()'>Encontrar Salário PJ Aproximado</button>
+                  <button class='btn' onclick='executarComLoading()'>Encontrar Salário PJ</button>
                   <br>
                   <br>
                   <div id ="quantidadedecalculosloading" class="card">O sistema precisou execultar exatamente '<span id='tentativas'>0</span>' calculos para encontrar o Salário PJ</div>
@@ -257,7 +257,8 @@
     </div>
 
     <div style="text-align: right; margin-top: 20px;">
-      <button class="btn" onclick="window.print()">Salvar</button>
+      <button class="btn" style="margin-right: 8px;" onclick="exportarPDFVisaoEmpregado()">Exportar PDF – Visão Empregado</button>
+      <button class="btn" onclick="window.print()">Exportar PDF – Visão Empresa</button>
     </div>
 
     <style>
@@ -382,5 +383,6 @@
   </main>
     <br>
       <br>
+<script src="export_pdf_empregado.js"></script>
 </body>
 </html>

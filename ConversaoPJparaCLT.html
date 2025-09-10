@@ -132,6 +132,12 @@
         <span class="spancardresultado" id='VANTAGEMECONOMICACUSTO' style="font-size: 1em; line-height: 30px;">0</span>
       </div> 
     </div>
+    <style>
+      /* Destaque negativo apenas nesta página */
+      .cartaoresultado .card-header { color: #c62828; }
+      #VANTAGEMECONOMICACUSTO { color: #c62828; }
+      #VANTAGEMECONOMICACUSTO::before { content: "- "; }
+    </style>
     
     <br>
     <div class='cards'>
